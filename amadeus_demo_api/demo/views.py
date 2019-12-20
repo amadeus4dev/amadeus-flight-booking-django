@@ -41,12 +41,10 @@ def demo(request):
         try:
             search_flights = amadeus.get('/v2/shopping/flight-offers', originLocationCode='MAD', destinationLocationCode='ATH',
                         departureDate='2020-05-01', returnDate='2020-05-11', adults=1)
-            # search_flights = amadeus.shopping.flight_offers.get(**kwargs)
         except ResponseError as error:
             messages.add_message(request, messages.ERROR, error)
             return render(request, 'demo/demo_form.html', {})
         search_flights_returned = []
-        print('skata',search_flights.data[0])
         for flight in search_flights.data:
             offer = Flight(flight).construct_flights()
             search_flights_returned.append(offer)
@@ -88,6 +86,18 @@ def get_city_airport_list(data):
     
     return json.dumps(result)
 
-def book(request):
 
-    return render(request, 'demo/book.html', {})
+def book_flight(request, flight):
+    body = {
+        'data': {
+            'type': 'flight-offers-pricing',
+            'flightOffers': '['+flight+']',
+        },
+    }
+    try:
+        offers_price_results = amadeus.post('/v1/shopping/flight-offers/pricing', body).data
+    except ResponseError as error:
+        messages.add_message(request, messages.ERROR, error)
+        return render(request, 'demo/book_flight.html', {'flight': error})
+    return render(request, 'demo/book_flight.html', {'flight': offers_price_results})
+
