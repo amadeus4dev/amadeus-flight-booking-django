@@ -18,12 +18,14 @@ def demo(request):
     destination = request.POST.get('Destination')
     departureDate = request.POST.get('Departuredate')
     returnDate = request.POST.get('Returndate')
-    adults = request.POST.get('Adults', '1')
+    adults = request.POST.get('Adults')
 
-    kwargs = {'origin': request.POST.get('Origin'), 'destination': request.POST.get('Destination'),
+    kwargs = {'originLocationCode': request.POST.get('Origin'), 'destinationLocationCode': request.POST.get('Destination'),
               'departureDate': request.POST.get('Departuredate')}
     if adults:
         kwargs['adults'] = adults
+    else:
+        kwargs['adults'] = 1
     tripPurpose = ''
     if returnDate:
         kwargs['returnDate'] = returnDate
@@ -39,8 +41,7 @@ def demo(request):
 
     if origin and destination and departureDate:
         try:
-            search_flights = amadeus.get('/v2/shopping/flight-offers', originLocationCode='MAD', destinationLocationCode='ATH',
-                        departureDate='2020-05-01', returnDate='2020-05-11', adults=1)
+            search_flights = amadeus.shopping.flight_offers_search.get(**kwargs)
         except ResponseError as error:
             messages.add_message(request, messages.ERROR, error)
             return render(request, 'demo/demo_form.html', {})
@@ -88,16 +89,9 @@ def get_city_airport_list(data):
 
 
 def book_flight(request, flight):
-    body = {
-        'data': {
-            'type': 'flight-offers-pricing',
-            'flightOffers': '['+flight+']',
-        },
-    }
     try:
-        offers_price_results = amadeus.post('/v1/shopping/flight-offers/pricing', body).data
+        offers_price_results = amadeus.shopping.flight_offers.pricing.post(flight)
     except ResponseError as error:
         messages.add_message(request, messages.ERROR, error)
-        return render(request, 'demo/book_flight.html', {'flight': error})
+        return render(request, 'demo/book_flight.html', {'flight': '['+flight+']'})
     return render(request, 'demo/book_flight.html', {'flight': offers_price_results})
-
