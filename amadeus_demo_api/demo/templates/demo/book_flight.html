@@ -1,1 +1,9 @@
 {{flight}}
+
+{% if messages %}
+<ul class="messages">
+    {% for message in messages %}
+    <li class="text-danger">{% if message.tags %}{% endif %}{{ message }}</li>
+    {% endfor %}
+</ul>
+{% endif %}

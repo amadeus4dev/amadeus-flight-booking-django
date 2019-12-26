@@ -1,4 +1,5 @@
 import json
+import ast
 from amadeus import Client, ResponseError, Location
 from django.shortcuts import render
 from django.contrib import messages
@@ -90,8 +91,8 @@ def get_city_airport_list(data):
 
 def book_flight(request, flight):
     try:
-        offers_price_results = amadeus.shopping.flight_offers.pricing.post(flight)
+        offers_price_results = amadeus.shopping.flight_offers.pricing.post(ast.literal_eval(flight)).data
     except ResponseError as error:
         messages.add_message(request, messages.ERROR, error)
-        return render(request, 'demo/book_flight.html', {'flight': '['+flight+']'})
+        return render(request, 'demo/book_flight.html', {'flight': offers_price_results})
     return render(request, 'demo/book_flight.html', {'flight': offers_price_results})
