@@ -88,11 +88,24 @@ def get_city_airport_list(data):
     
     return json.dumps(result)
 
-
+import json
 def book_flight(request, flight):
     try:
-        offers_price_results = amadeus.shopping.flight_offers.pricing.post(ast.literal_eval(flight)).data
+        offers_price_results = amadeus.shopping.flight_offers.pricing.post(ast.literal_eval(flight)).data['flightOffers']
     except ResponseError as error:
         messages.add_message(request, messages.ERROR, error)
-        return render(request, 'demo/book_flight.html', {'flight': offers_price_results})
-    return render(request, 'demo/book_flight.html', {'flight': offers_price_results})
+        return render(request, 'demo/book_flight.html', {'flight': error})
+    body = {'data':
+                {'type': 'flight-order',
+                 'flightOffers': [ast.literal_eval(flight)],
+                 'travelers': json.loads(travelers)
+                 }}
+    try:
+        order = amadeus.post('/v1/booking/flight-orders', body).data
+    except ResponseError as error:
+        messages.add_message(request, messages.ERROR, error)
+        return render(request, 'demo/book_flight.html', {'flight': error})
+    return render(request, 'demo/book_flight.html', {'flight': order})
+
+
+travelers = '[ { "id": "1", "dateOfBirth": "1982-01-16", "name": { "firstName": "JORGE", "lastName": "GONZALES" }, "gender": "MALE", "contact": { "emailAddress": "jorge.gonzales833@telefonica.es", "phones": [ { "deviceType": "MOBILE", "countryCallingCode": "34", "number": "480080076" } ] }, "documents": [ { "documentType": "PASSPORT", "birthPlace": "Madrid", "issuanceLocation": "Madrid", "issuanceDate": "2015-04-14", "number": "00000000", "expiryDate": "2025-04-14", "issuanceCountry": "ES", "validityCountry": "ES", "nationality": "ES", "holder": true } ] }, { "id": "2", "dateOfBirth": "2012-10-11", "gender": "FEMALE", "contact": { "emailAddress": "jorge.gonzales833@telefonica.es", "phones": [ { "deviceType": "MOBILE", "countryCallingCode": "34", "number": "480080076" } ] }, "name": { "firstName": "ADRIANA", "lastName": "GONZALES" } } ]'

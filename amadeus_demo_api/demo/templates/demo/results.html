@@ -18,7 +18,6 @@
     <div class="col-md-12 offset-3">
         <h3 class="login-heading mb-4 text-left">FLIGHT OFFERS SEARCH</h3>
         {% for r, flight in response %}
-        {{ flight }}
             {% if r.0firstFlightDepartureDate %}
                 <div class="card mb-3 text-center" style="max-width: 40rem;">
                     <div class="nounderline card-header text-center" style="font-size: 26;color: darkred;">${{ r.price }}
