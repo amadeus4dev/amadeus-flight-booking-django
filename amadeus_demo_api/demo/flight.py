@@ -1,4 +1,5 @@
-from datetime import datetime, timedelta
+import re
+from datetime import datetime
 
 
 class Flight:
@@ -29,7 +30,9 @@ class Flight:
                 offer[str(index) + 'secondFlightArrivalDate'] = get_hour(self.flight['itineraries'][index]['segments'][1]['arrival']['at'])
                 offer[str(index) + 'secondFlightArrivalDuration'] = self.flight['itineraries'][index]['segments'][1]['duration']
                 offer[str(index) + 'FlightTotalDuration'] = self.flight['itineraries'][index]['duration']
-
+                offer[str(index) + 'stop_time'] = get_stoptime(offer[str(index) + 'FlightTotalDuration'],
+                                                               offer[str(index) + 'firstFlightArrivalDuration'],
+                                                               offer[str(index) + 'secondFlightArrivalDuration'])
 
             elif len(self.flight['itineraries'][0]['segments']) == 1:  # direct flight
                 offer[str(index) + 'firstFlightDepartureAirport'] = self.flight['itineraries'][index]['segments'][0]['departure']['iataCode']
@@ -44,24 +47,50 @@ class Flight:
             index += 1
         return offer
 
-'''
 
-
-def get_stoptime(arrival_stop_time, departure_stop_time):
-    arrival = datetime.strptime(arrival_stop_time[0:19], "%Y-%m-%dT%H:%M:%S")
-    departure = datetime.strptime(departure_stop_time[0:19], "%Y-%m-%dT%H:%M:%S")
-    stoptime = str(timedelta(seconds=(departure - arrival).seconds))
-    if stoptime[1] == ':':
-        stoptime = '0' + stoptime
-    return stoptime[0:5]
-
-'''
 def get_airline_logo(carrier_code):
     return "https://s1.apideeplink.com/images/airlines/" + carrier_code + ".png"
+
 
 def get_hour(date_time):
     return datetime.strptime(date_time[0:19], "%Y-%m-%dT%H:%M:%S").strftime("%H:%M")
 
+
+# humanize duration datetime.strptime(total, "PT%HH%MM"), doesn't work for more than 24 hours.
 def get_duration(duration):
     res = datetime.strptime(duration, "%wDT%HH%MM")
     return res.strftime("%H:%M")
+
+
+def get_stoptime(total_duration, first_flight_duration, second_flight_duration):
+    if re.search('PT(.*)H', total_duration) is None:
+        total_duration_hours = 0
+    else:
+        total_duration_hours = int(re.search('PT(.*)H', total_duration).group(1))
+    if re.search('H(.*)M', total_duration) is None:
+        total_duration_minutes = 0
+    else:
+        total_duration_minutes = int(re.search('H(.*)M', total_duration).group(1))
+
+    if re.search('PT(.*)H', first_flight_duration) is None:
+        first_flight_hours = 0
+    else:
+        first_flight_hours = int(re.search('PT(.*)H', first_flight_duration).group(1))
+    if re.search('H(.*)M', first_flight_duration) is None:
+        first_flight_minutes = 0
+    else:
+        first_flight_minutes = int(re.search('H(.*)M', first_flight_duration).group(1))
+
+    if re.search('PT(.*)H', second_flight_duration) is None:
+        second_flight_hours = 0
+    else:
+        second_flight_hours = int(re.search('PT(.*)H', second_flight_duration).group(1))
+    if re.search('H(.*)M', first_flight_duration) is None:
+        second_flight_minutes = 0
+    else:
+        second_flight_minutes = int(re.search('H(.*)M', second_flight_duration).group(1))
+
+    connection_minutes = (total_duration_hours*60+total_duration_minutes) - (first_flight_hours*60 + first_flight_minutes + second_flight_hours*60 + second_flight_minutes)
+    hours = connection_minutes // 60
+    minutes = connection_minutes % 60
+    return str(hours)+':'+str(minutes)
