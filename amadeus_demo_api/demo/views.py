@@ -88,13 +88,18 @@ def get_city_airport_list(data):
     
     return json.dumps(result)
 
-import json
+
 def book_flight(request, flight):
+    amadeus = Client(
+        client_id='',
+        client_secret='',
+        log_level='debug',
+    )
     try:
         offers_price_results = amadeus.shopping.flight_offers.pricing.post(ast.literal_eval(flight)).data['flightOffers']
     except ResponseError as error:
-        messages.add_message(request, messages.ERROR, error)
-        return render(request, 'demo/book_flight.html', {'flight': error})
+        messages.add_message(request, messages.ERROR, error.response.body)
+        return render(request, 'demo/book_flight.html', {})
     body = {'data':
                 {'type': 'flight-order',
                  'flightOffers': [ast.literal_eval(flight)],
@@ -103,8 +108,8 @@ def book_flight(request, flight):
     try:
         order = amadeus.post('/v1/booking/flight-orders', body).data
     except ResponseError as error:
-        messages.add_message(request, messages.ERROR, error)
-        return render(request, 'demo/book_flight.html', {'flight': error})
+        messages.add_message(request, messages.ERROR, error.response.body)
+        return render(request, 'demo/book_flight.html', {})
     return render(request, 'demo/book_flight.html', {'flight': order})
 
 
