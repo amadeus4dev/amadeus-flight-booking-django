@@ -1,9 +1,57 @@
-{{flight}}
+{% load static %}
 
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+    <link rel="stylesheet" type="text/css" href="{% static 'demo/style.css' %}">
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
+    <script src="https://code.jquery.com/jquery-3.4.1.js" integrity="sha256-WpOohJOqMqqyKL9FccASB9O0KwACQJpFTUBLTYOVvVU=" crossorigin="anonymous"></script>
+    <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js" integrity="sha256-T0Vest3yCU7pafRw9r+settMBX6JkKN06dqBnpQ8d30=" crossorigin="anonymous"></script>
+
+    <title>Your booking confirmation </title>
+
+</head>
 {% if messages %}
 <ul class="messages">
     {% for message in messages %}
     <li class="text-danger">{% if message.tags %}{% endif %}{{ message }}</li>
     {% endfor %}
 </ul>
+{% else %}
+    <div class="modal-body row">
+    <div class="col-md-12">
+        {% for r in response %}
+            <h3 class="login-heading mb-4 text-left">Your Booking Confirmation {{ r.confirmed }}</h3>
+            <h4 class="login-heading mb-4 text-left">Document issued at {{ r.created }}</h4>
+            <h4 class="login-heading mb-4 text-left">Booking reference {{ r.reference }}</h4>
+            <h4 class="login-heading mb-4 text-left">Passenger {{ r.first_name }} {{ r.last_name }}</h4>
+            <h4 class="login-heading mb-4 text-left">Price ${{ r.price }}</h4>
+            {% if r.0firstFlightDepartureDate %}
+                <div class="card mb-3 text-center" style="max-width: 40rem;">
+                    <div class="card-body">
+                        <div class="card-text">
+                            Departure at {{r.0departureDate}}
+                                <h4><img src={{ r.0firstFlightAirlineLogo }} alt={{ r.0firstFlightAirline }}> {{ r.0firstFlightDepartureDate }} {{ r.0firstFlightDepartureAirport }}
+                                            &#10230 {{ r.0firstFlightArrivalAirport }} {{ r.0firstFlightArrivalDate }}</h4>
+                                {% if r.0secondFlightDepartureAirport %}
+                                    <h4><img src={{ r.0secondFlightAirlineLogo }} alt={{ r.0secondFlightAirline }}> {{ r.0secondFlightDepartureDate }} {{ r.0secondFlightDepartureAirport }}
+                                            &#10230 {{ r.0secondFlightArrivalAirport }} {{ r.0secondFlightArrivalDate }}</h4>
+                                {% endif %}
+                                {% if r.1firstFlightDepartureAirport %}
+                            <hr class="newstyle">
+                            Return at {{r.1departureDate}}
+                                    <h4><img src={{ r.1firstFlightAirlineLogo }} alt={{ r.1firstFlightAirline }}> {{ r.1firstFlightDepartureDate }} {{ r.1firstFlightDepartureAirport }}
+                                            &#10230 {{ r.1firstFlightArrivalAirport }} {{ r.1firstFlightArrivalDate }}</h4>
+                                    {% if r.1secondFlightDepartureAirport %}
+                                        <h4><img src={{ r.1secondFlightAirlineLogo }} alt={{ r.1secondFlightAirline }}> {{ r.1secondFlightDepartureDate }} {{ r.1secondFlightDepartureAirport }}
+                                            &#10230 {{ r.1secondFlightArrivalAirport }} {{ r.1secondFlightArrivalDate }}</h4>
+                                    {% endif %}
+                            {% endif %}
+                        </div>
+                    </div>
+                </div>
+            {% endif %}
+        {% endfor %}
+    </div>
+</div>
 {% endif %}

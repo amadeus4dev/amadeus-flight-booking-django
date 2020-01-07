@@ -4,6 +4,7 @@ from amadeus import Client, ResponseError, Location
 from django.shortcuts import render
 from django.contrib import messages
 from .flight import Flight
+from .booking import Booking
 from django.http import HttpResponse
 
 amadeus = Client(
@@ -112,12 +113,14 @@ def book_flight(request, flight):
         messages.add_message(request, messages.ERROR, error.response.body)
         return render(request, 'demo/book_flight.html', {})
 
-    ticket = {}
-    ticket['message'] = 'Your Booking Information'
-    ticket['created'] = order['associatedRecords'][0]['creationDate']
-    ticket['itineraries'] = order['flightOffers'][0]['itineraries']
-    ticket['firstName'] = order['travelers'][0]['name']['firstName']
-    ticket['lastName'] = order['travelers'][0]['name']['lastName']
-    ticket['confirmed'] = order['ticketingAgreement']['option']
+    passenger_name_record = []
+    booking = Booking(order).construct_booking()
+    passenger_name_record.append(booking)
+    # ticket['message'] = 'Your Booking Information'
+    # ticket['created'] = order['associatedRecords'][0]['creationDate']
+    # ticket['itineraries'] = order['flightOffers'][0]['itineraries']
+    # ticket['firstName'] = order['travelers'][0]['name']['firstName']
+    # ticket['lastName'] = order['travelers'][0]['name']['lastName']
+    # ticket['confirmed'] = order['ticketingAgreement']['option']
 
-    return render(request, 'demo/book_flight.html', {'flight': ticket})
+    return render(request, 'demo/book_flight.html', {'response': passenger_name_record})
