@@ -85,7 +85,7 @@ def get_stoptime(total_duration, first_flight_duration, second_flight_duration):
         second_flight_hours = 0
     else:
         second_flight_hours = int(re.search('PT(.*)H', second_flight_duration).group(1))
-    if re.search('H(.*)M', first_flight_duration) is None:
+    if re.search('H(.*)M', second_flight_duration) is None:
         second_flight_minutes = 0
     else:
         second_flight_minutes = int(re.search('H(.*)M', second_flight_duration).group(1))
