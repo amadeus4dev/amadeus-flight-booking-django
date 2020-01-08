@@ -1,4 +1,9 @@
-# Amadeus Quick Connect
+# Amadeus QuickConnect
+
+We recently released our first booking API to give you the chance to integrate booking capabilities directly in your application. In this prototype we demonstrate the end-to-end booking process, which works in conjunction with three APIs:
+* [Flight Offer Search](https://developers.amadeus.com/self-service/category/air/api-doc/flight-offers-search): to search for the best bookable flight offers.
+* [Flight Offer Price](https://developers.amadeus.com/self-service/category/air/api-doc/flight-offers-price):  confirms the latest price and availability of a specific chosen flight.
+* [Flight Create Orders](https://developers.amadeus.com/self-service/category/air/api-doc/flight-create-orders): to book flights and ancillary services proposed by the airline.
 
 ## How to run the project via Docker (recommended)
 
