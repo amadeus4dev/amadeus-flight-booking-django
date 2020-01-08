@@ -10,7 +10,7 @@ class Booking:
         offer = {}
         index = 0
         offer['price'] = self.flight['flightOffers'][0]['price']['total']
-        offer['created'] = self.flight['associatedRecords'][0]['creationDate']
+        offer['created'] = keep_date_remove_time(self.flight['associatedRecords'][0]['creationDate'])
         offer['reference'] = self.flight['associatedRecords'][0]['reference']
         offer['confirmed'] = self.flight['ticketingAgreement']['option']
         offer['first_name'] = self.flight['travelers'][0]['name']['firstName']
@@ -24,7 +24,7 @@ class Booking:
                 offer[str(index) + 'firstFlightAirlineLogo'] = get_airline_logo(self.flight['flightOffers'][0]['itineraries'][index]['segments'][0]['carrierCode'])
                 offer[str(index) + 'firstFlightAirline'] = self.flight['flightOffers'][0]['itineraries'][index]['segments'][0]['carrierCode']
                 offer[str(index) + 'firstFlightDepartureDate'] = get_hour(self.flight['flightOffers'][0]['itineraries'][index]['segments'][0]['departure']['at'])
-                offer[str(index) + 'departureDate'] = self.flight['flightOffers'][0]['itineraries'][index]['segments'][0]['departure']['at']
+                offer[str(index) + 'departureDate'] = keep_date_remove_time(self.flight['flightOffers'][0]['itineraries'][index]['segments'][0]['departure']['at'])
                 offer[str(index) + 'firstFlightArrivalAirport'] = self.flight['flightOffers'][0]['itineraries'][index]['segments'][0]['arrival']['iataCode']
                 offer[str(index) + 'firstFlightArrivalDate'] = get_hour(self.flight['flightOffers'][0]['itineraries'][index]['segments'][0]['arrival']['at'])
                 offer[str(index) + 'secondFlightDepartureAirport'] = self.flight['flightOffers'][0]['itineraries'][index]['segments'][1]['departure']['iataCode']
@@ -39,7 +39,7 @@ class Booking:
                 offer[str(index) + 'firstFlightAirlineLogo'] = get_airline_logo(self.flight['flightOffers'][0]['itineraries'][index]['segments'][0]['carrierCode'])
                 offer[str(index) + 'firstFlightAirline'] = self.flight['flightOffers'][0]['itineraries'][index]['segments'][0]['carrierCode']
                 offer[str(index) + 'firstFlightDepartureDate'] = get_hour(self.flight['flightOffers'][0]['itineraries'][index]['segments'][0]['departure']['at'])
-                offer[str(index) + 'departureDate'] = self.flight['flightOffers'][0]['itineraries'][index]['segments'][0]['departure']['at']
+                offer[str(index) + 'departureDate'] = keep_date_remove_time(self.flight['flightOffers'][0]['itineraries'][index]['segments'][0]['departure']['at'])
                 offer[str(index) + 'firstFlightArrivalAirport'] = self.flight['flightOffers'][0]['itineraries'][index]['segments'][0]['arrival']['iataCode']
                 offer[str(index) + 'firstFlightArrivalDate'] = get_hour(self.flight['flightOffers'][0]['itineraries'][index]['segments'][0]['arrival']['at'])
 
@@ -55,7 +55,6 @@ def get_hour(date_time):
     return datetime.strptime(date_time[0:19], "%Y-%m-%dT%H:%M:%S").strftime("%H:%M")
 
 
-# humanize duration datetime.strptime(total, "PT%HH%MM"), doesn't work for more than 24 hours.
 def get_duration(duration):
     res = datetime.strptime(duration, "%wDT%HH%MM")
     return res.strftime("%H:%M")
@@ -93,3 +92,7 @@ def get_stoptime(total_duration, first_flight_duration, second_flight_duration):
     hours = connection_minutes // 60
     minutes = connection_minutes % 60
     return str(hours)+':'+str(minutes)
+
+
+def keep_date_remove_time(datetime):
+    return datetime.split('T', 1)[0]

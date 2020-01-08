@@ -20,14 +20,9 @@ def demo(request):
     destination = request.POST.get('Destination')
     departureDate = request.POST.get('Departuredate')
     returnDate = request.POST.get('Returndate')
-    adults = request.POST.get('Adults')
 
     kwargs = {'originLocationCode': request.POST.get('Origin'), 'destinationLocationCode': request.POST.get('Destination'),
-              'departureDate': request.POST.get('Departuredate')}
-    if adults:
-        kwargs['adults'] = adults
-    else:
-        kwargs['adults'] = 1
+              'departureDate': request.POST.get('Departuredate'), 'adults': 1}
     tripPurpose = ''
     if returnDate:
         kwargs['returnDate'] = returnDate

@@ -46,7 +46,7 @@
                     {% endfor %}
                 </ul>
                 {% endif %}
-              <h3 class="login-heading mb-4">Welcome to Amadeus Flight Search</h3>
+              <h3 class="login-heading mb-4">Amadeus QuickConnect</h3>
               <form action="" method="POST" id="form_id"> {% csrf_token %}
                   <div class="form-label-group">
                       <input type="text" name="Origin" id="inputOrigin"
@@ -70,13 +70,7 @@
                              class="form-control" placeholder="Return Date">
                       <label for="idReturndate">Return Date</label>
                   </div>
-
-                  <div class="form-label-group">
-                      <input type="number" name="Adults" id="idAdults"
-                             class="form-control" placeholder="Adults">
-                      <label for="idAdults">Adults</label>
-                  </div>
-                  <input class="btn btn-lg btn-primary btn-block btn-login text-uppercase font-weight-bold mb-2" type="Submit" name="Submit" value="Submit" />
+                  <input class="btn btn-lg btn-primary btn-block btn-login text-uppercase font-weight-bold mb-2" type="Submit" name="Submit" value="Search Flight" />
               </form>
             </div>
           </div>

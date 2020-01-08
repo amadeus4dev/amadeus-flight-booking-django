@@ -29,8 +29,8 @@ class Flight:
                 offer[str(index) + 'secondFlightArrivalAirport'] = self.flight['itineraries'][index]['segments'][1]['arrival']['iataCode']
                 offer[str(index) + 'secondFlightArrivalDate'] = get_hour(self.flight['itineraries'][index]['segments'][1]['arrival']['at'])
                 offer[str(index) + 'secondFlightArrivalDuration'] = self.flight['itineraries'][index]['segments'][1]['duration']
-                offer[str(index) + 'FlightTotalDuration'] = self.flight['itineraries'][index]['duration']
-                offer[str(index) + 'stop_time'] = get_stoptime(offer[str(index) + 'FlightTotalDuration'],
+                offer[str(index) + 'FlightTotalDuration'] = self.flight['itineraries'][index]['duration'][2:]
+                offer[str(index) + 'stop_time'] = get_stoptime(self.flight['itineraries'][index]['duration'],
                                                                offer[str(index) + 'firstFlightArrivalDuration'],
                                                                offer[str(index) + 'secondFlightArrivalDuration'])
 
@@ -42,7 +42,7 @@ class Flight:
                 offer[str(index) + 'firstFlightArrivalAirport'] = self.flight['itineraries'][index]['segments'][0]['arrival']['iataCode']
                 offer[str(index) + 'firstFlightArrivalDate'] = get_hour(self.flight['itineraries'][index]['segments'][0]['arrival']['at'])
                 offer[str(index) + 'firstFlightArrivalDuration'] = self.flight['itineraries'][index]['segments'][0]['duration']
-                offer[str(index) + 'FlightTotalDuration'] = self.flight['itineraries'][index]['duration']
+                offer[str(index) + 'FlightTotalDuration'] = self.flight['itineraries'][index]['duration'][2:]
 
             index += 1
         return offer
@@ -56,7 +56,6 @@ def get_hour(date_time):
     return datetime.strptime(date_time[0:19], "%Y-%m-%dT%H:%M:%S").strftime("%H:%M")
 
 
-# humanize duration datetime.strptime(total, "PT%HH%MM"), doesn't work for more than 24 hours.
 def get_duration(duration):
     res = datetime.strptime(duration, "%wDT%HH%MM")
     return res.strftime("%H:%M")
