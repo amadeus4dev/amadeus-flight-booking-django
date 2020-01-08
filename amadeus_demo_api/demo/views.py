@@ -116,11 +116,5 @@ def book_flight(request, flight):
     passenger_name_record = []
     booking = Booking(order).construct_booking()
     passenger_name_record.append(booking)
-    # ticket['message'] = 'Your Booking Information'
-    # ticket['created'] = order['associatedRecords'][0]['creationDate']
-    # ticket['itineraries'] = order['flightOffers'][0]['itineraries']
-    # ticket['firstName'] = order['travelers'][0]['name']['firstName']
-    # ticket['lastName'] = order['travelers'][0]['name']['lastName']
-    # ticket['confirmed'] = order['ticketingAgreement']['option']
 
     return render(request, 'demo/book_flight.html', {'response': passenger_name_record})
