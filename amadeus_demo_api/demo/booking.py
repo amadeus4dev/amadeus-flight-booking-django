@@ -16,7 +16,6 @@ class Booking:
         offer['first_name'] = self.flight['travelers'][0]['name']['firstName']
         offer['last_name'] = self.flight['travelers'][0]['name']['lastName']
 
-
         for f in self.flight['flightOffers'][0]['itineraries']:
             # Keys starting from 0 correspond to Outbound flights and the keys starting from 1 tp Return flights
             if len(self.flight['flightOffers'][0]['itineraries'][index]['segments']) == 2:  # one stop flight
@@ -53,11 +52,6 @@ def get_airline_logo(carrier_code):
 
 def get_hour(date_time):
     return datetime.strptime(date_time[0:19], "%Y-%m-%dT%H:%M:%S").strftime("%H:%M")
-
-
-def get_duration(duration):
-    res = datetime.strptime(duration, "%wDT%HH%MM")
-    return res.strftime("%H:%M")
 
 
 def get_stoptime(total_duration, first_flight_duration, second_flight_duration):

@@ -56,11 +56,6 @@ def get_hour(date_time):
     return datetime.strptime(date_time[0:19], "%Y-%m-%dT%H:%M:%S").strftime("%H:%M")
 
 
-def get_duration(duration):
-    res = datetime.strptime(duration, "%wDT%HH%MM")
-    return res.strftime("%H:%M")
-
-
 def get_stoptime(total_duration, first_flight_duration, second_flight_duration):
     if re.search('PT(.*)H', total_duration) is None:
         total_duration_hours = 0
