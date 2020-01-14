@@ -1,4 +1,4 @@
--e git+https://github.com/amadeus4dev/amadeus-python.git@offers-price#egg=quickconnect
-Django==2.2.7
+-e git+https://github.com/amadeus4dev/amadeus-python.git@master#egg=quickconnect
+Django==2.2.8
 pytz==2019.3
 sqlparse==0.3.0

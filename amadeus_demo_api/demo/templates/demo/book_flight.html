@@ -25,7 +25,6 @@
             <div class="login-heading mb-4 text-left">Status: <span class="text-danger">{{ r.confirmed }}</span></div>
             <div class="login-heading mb-4 text-left">Booking reference: <span class="text-danger">{{ r.reference }}</span></div>
             <div class="login-heading mb-4 text-left">Document issued at: <b>{{ r.created }}</b></div>
-            <div class="login-heading mb-4 text-left">Passenger: <b>{{ r.first_name }} {{ r.last_name }}</b></div>
             <div class="login-heading mb-4 text-left">Price: <b>${{ r.price }}</b></div>
             {% if r.0firstFlightDepartureDate %}
                 <div class="card mb-3 text-center" style="max-width: 40rem;">
