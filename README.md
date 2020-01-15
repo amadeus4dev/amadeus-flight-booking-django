@@ -1,4 +1,4 @@
-# Amadeus Quick-Connect
+# Amadeus Flight Booking
 
 We recently released our first booking API to give you the chance to integrate booking capabilities directly in your application. In this prototype we demonstrate the end-to-end booking process, which works in conjunction with three APIs:
 * [Flight Offer Search](https://developers.amadeus.com/self-service/category/air/api-doc/flight-offers-search): to search for the best bookable flight offers.
