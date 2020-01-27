@@ -7,11 +7,7 @@ from .flight import Flight
 from .booking import Booking
 from django.http import HttpResponse
 
-amadeus = Client(
-    client_id='',
-    client_secret='',
-    log_level='debug',
-)
+amadeus = Client()
 
 
 def demo(request):
