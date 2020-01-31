@@ -48,8 +48,8 @@ make stop
 Clone the repository.
 
 ```sh
-git clone https://github.com/amadeus4dev/flight-search-demo.git
-cd flight-search-demo
+git clone https://github.com/amadeus4dev/amadeus-flight-booking-django.git
+cd amadeus-flight-booking-django
 ```
 
 Next create a virtual environment and install the dependencies.
