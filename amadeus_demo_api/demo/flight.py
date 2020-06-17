@@ -34,7 +34,7 @@ class Flight:
                                                                offer[str(index) + 'firstFlightArrivalDuration'],
                                                                offer[str(index) + 'secondFlightArrivalDuration'])
 
-            elif len(self.flight['itineraries'][0]['segments']) == 1:  # direct flight
+            elif len(self.flight['itineraries'][index]['segments']) == 1:  # direct flight
                 offer[str(index) + 'firstFlightDepartureAirport'] = self.flight['itineraries'][index]['segments'][0]['departure']['iataCode']
                 offer[str(index) + 'firstFlightAirlineLogo'] = get_airline_logo(self.flight['itineraries'][index]['segments'][0]['carrierCode'])
                 offer[str(index) + 'firstFlightAirline'] = self.flight['itineraries'][index]['segments'][0]['carrierCode']
