@@ -54,12 +54,17 @@ git clone https://github.com/amadeus4dev/amadeus-flight-booking-django.git
 cd amadeus-flight-booking-django
 ```
 
-Next create a virtual environment and install the dependencies.
+Next create a virtual environment with [virtualenv](https://virtualenv.pypa.io/en/stable/installation.html) and install the dependencies.
 
 ```sh
 virtualenv venv
 source venv/bin/activate
 pip install -r requirements.txt
+```
+
+For Windows run the command below to activate the virtual environment.
+``` 
+./venv/scripts/activate.bat
 ```
 
 For authentication add your API key/secret to your `.bashrc` or `.zshrc` files.
