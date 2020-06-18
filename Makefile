@@ -2,14 +2,13 @@ PORTS = -p 8000:8000
 ENV = \
   -e AMADEUS_CLIENT_ID=${AMADEUS_CLIENT_ID} \
   -e AMADEUS_CLIENT_SECRET=${AMADEUS_CLIENT_SECRET} \
-  -e AMADEUS_HOSTNAME=${AMADEUS_HOSTNAME} \
-  -e DEBUG_VALUE=${DEBUG_VALUE}
+  -e AMADEUS_HOSTNAME=${AMADEUS_HOSTNAME}
 
 NS ?= amadeus4dev
 VERSION ?= latest
 
-IMAGE_NAME ?= flight-search-demo
-CONTAINER_NAME ?= flight-search-demo
+IMAGE_NAME ?= flight-booking
+CONTAINER_NAME ?= flight-booking
 CONTAINER_INSTANCE ?= default
 
 build: Dockerfile
