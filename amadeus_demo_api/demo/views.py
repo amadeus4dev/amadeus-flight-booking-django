@@ -12,43 +12,48 @@ amadeus = Client()
 
 def demo(request):
     # Retrieve data from the UI form
-    origin = request.POST.get("Origin")
-    destination = request.POST.get("Destination")
-    departureDate = request.POST.get("Departuredate")
-    returnDate = request.POST.get("Returndate")
+    origin = request.POST.get('Origin')
+    destination = request.POST.get('Destination')
+    departure_date = request.POST.get('Departuredate')
+    return_date = request.POST.get('Returndate')
 
     # Prepare url parameters for search
     kwargs = {
-        "originLocationCode": request.POST.get("Origin"),
-        "destinationLocationCode": request.POST.get("Destination"),
-        "departureDate": request.POST.get("Departuredate"),
-        "adults": 1,
+        'originLocationCode': origin,
+        'destinationLocationCode': destination,
+        'departureDate': departure_date,
+        'adults': 1
     }
 
     # For a round trip, we use AI Trip Purpose Prediction
-    #  to predict if it is a leisure or business trip
-    tripPurpose = ""
-    if returnDate:
-        kwargs["returnDate"] = returnDate
+    # to predict if it is a leisure or business trip
+    tripPurpose = ''
+    if return_date:
+        # Adds the parameter returnDate for the Flight Offers Search API call
+        kwargs['returnDate'] = return_date
+        kwargs_trip_purpose = {'originLocationCode': origin,
+                               'destinationLocationCode': destination,
+                               'departureDate': departure_date,
+                               'returnDate': return_date
+                               }
         try:
+            # Calls Trip Purpose Prediction API
             trip_purpose_response = amadeus.travel.predictions.trip_purpose.get(
-                originLocationCode=origin,
-                destinationLocationCode=destination,
-                departureDate=departureDate,
-                returnDate=returnDate,
-            ).data
-            tripPurpose = trip_purpose_response["result"]
+                **kwargs_trip_purpose).data
+            tripPurpose = trip_purpose_response['result']
         except ResponseError as error:
-            messages.add_message(request, messages.ERROR, error)
-            return render(request, "demo/demo_form.html", {})
+            messages.add_message(request, messages.ERROR,
+                                 error.response.result['errors'][0]['detail'])
+            return render(request, 'demo/home.html', {})
 
     # Perform flight search based on previous inputs
-    if origin and destination and departureDate:
+    if origin and destination and departure_date:
         try:
             search_flights = amadeus.shopping.flight_offers_search.get(**kwargs)
         except ResponseError as error:
-            messages.add_message(request, messages.ERROR, error)
-            return render(request, "demo/demo_form.html", {})
+            messages.add_message(request, messages.ERROR,
+                                 error.response.result['errors'][0]['detail'])
+            return render(request, 'demo/home.html', {})
         search_flights_returned = []
         for flight in search_flights.data:
             offer = Flight(flight).construct_flights()
@@ -57,53 +62,19 @@ def demo(request):
 
         return render(
             request,
-            "demo/results.html",
+            'demo/results.html',
             {
-                "response": response,
-                "origin": origin,
-                "destination": destination,
-                "departureDate": departureDate,
-                "returnDate": returnDate,
-                "tripPurpose": tripPurpose,
+                'response': response,
+                'origin': origin,
+                'destination': destination,
+                'departureDate': departure_date,
+                'returnDate': return_date,
+                'tripPurpose': tripPurpose,
             },
-        )
-    return render(request, "demo/demo_form.html", {})
+       )
+    return render(request, 'demo/home.html', {})
 
 
-# Auto-complete using Airport & City Search API for origin
-def origin_airport_search(request):
-    if request.is_ajax():
-        try:
-            data = amadeus.reference_data.locations.get(
-                keyword=request.GET.get("term", None), subType=Location.ANY
-            ).data
-        except ResponseError as error:
-            messages.add_message(request, messages.ERROR, error)
-    return HttpResponse(get_city_airport_list(data), "application/json")
-
-
-# Auto-complete using Airport & City Search API for destination
-def destination_airport_search(request):
-    if request.is_ajax():
-        try:
-            data = amadeus.reference_data.locations.get(
-                keyword=request.GET.get("term", None), subType=Location.ANY
-            ).data
-        except ResponseError as error:
-            messages.add_message(request, messages.ERROR, error)
-    return HttpResponse(get_city_airport_list(data), "application/json")
-
-
-def get_city_airport_list(data):
-    result = []
-    for i, val in enumerate(data):
-        result.append(data[i]["iataCode"] + ", " + data[i]["name"])
-    result = list(dict.fromkeys(result))
-
-    return json.dumps(result)
-
-
-# Perform Flight Price and Booking
 def book_flight(request, flight):
     # Create a fake traveler profile for booking
     traveler = {
@@ -140,10 +111,10 @@ def book_flight(request, flight):
     try:
         flight_price_confirmed = amadeus.shopping.flight_offers.pricing.post(
             ast.literal_eval(flight)
-        ).data["flightOffers"]
+        ).data['flightOffers']
     except ResponseError as error:
         messages.add_message(request, messages.ERROR, error.response.body)
-        return render(request, "demo/book_flight.html", {})
+        return render(request, 'demo/book_flight.html', {})
 
     # Use Flight Create Orders to perform the booking
     try:
@@ -151,11 +122,42 @@ def book_flight(request, flight):
             flight_price_confirmed, traveler
         ).data
     except ResponseError as error:
-        messages.add_message(request, messages.ERROR, error.response.body)
-        return render(request, "demo/book_flight.html", {})
+        messages.add_message(request, messages.ERROR,
+                             error.response.result['errors'][0]['detail'])
+        return render(request, 'demo/book_flight.html', {})
 
     passenger_name_record = []
     booking = Booking(order).construct_booking()
     passenger_name_record.append(booking)
 
-    return render(request, "demo/book_flight.html", {"response": passenger_name_record})
+    return render(request, 'demo/book_flight.html', {'response': passenger_name_record})
+
+
+def origin_airport_search(request):
+    if request.is_ajax():
+        try:
+            data = amadeus.reference_data.locations.get(
+                keyword=request.GET.get('term', None), subType=Location.ANY).data
+        except ResponseError as error:
+            messages.add_message(request, messages.ERROR,
+                                 error.response.result['errors'][0]['detail'])
+    return HttpResponse(get_city_airport_list(data), 'application/json')
+
+
+def destination_airport_search(request):
+    if request.is_ajax():
+        try:
+            data = amadeus.reference_data.locations.get(
+                keyword=request.GET.get('term', None), subType=Location.ANY).data
+        except ResponseError as error:
+            messages.add_message(request, messages.ERROR,
+                                 error.response.result['errors'][0]['detail'])
+    return HttpResponse(get_city_airport_list(data), 'application/json')
+
+
+def get_city_airport_list(data):
+    result = []
+    for i, val in enumerate(data):
+        result.append(data[i]['iataCode']+', '+data[i]['name'])
+    result = list(dict.fromkeys(result))
+    return json.dumps(result)
