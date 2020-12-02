@@ -67,7 +67,7 @@ For Windows run the command below to activate the virtual environment.
 ./venv/scripts/activate.bat
 ```
 
-For authentication add your API key/secret to your `.bashrc` or `.zshrc` files.
+For authentication add your API key/secret to your environmental variables.
 
 ```sh
 export AMADEUS_CLIENT_ID=YOUR_API_KEY
