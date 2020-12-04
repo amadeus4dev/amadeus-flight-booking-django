@@ -59,6 +59,7 @@ def demo(request):
             )
             return render(request, "demo/home.html", {})
         search_flights_returned = []
+        response = ""
         for flight in search_flights.data:
             offer = Flight(flight).construct_flights()
             search_flights_returned.append(offer)

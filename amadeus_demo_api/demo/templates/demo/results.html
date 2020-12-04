@@ -16,39 +16,43 @@
 
 <div class="modal-body row">
     <div class="col-md-12 offset-3">
-        <h3 class="login-heading mb-4 text-left">FLIGHT OFFERS SEARCH</h3>
-        {% for r, flight in response %}
-            {% if r.0firstFlightDepartureDate %}
-                <div class="card mb-3 text-center" style="max-width: 40rem;">
-                    <div class="nounderline card-header text-center" style="font-size: 26;color: darkred;">${{ r.price }}
-                        <a href="{% url 'book_flight' flight %}"><input class="ml-2 btn btn-warning btn-lg text-uppercase font-weight-normal mb-2" type="Submit" name="bookFlight" value="Book Flight" /></a>
-                    </div>
-                    <div class="card-body">
-                        <div class="card-text">
-                            <h4 class="font-weight-light text-info pb-3">Departure <span class="smallstyle">Total duration {{ r.0FlightTotalDuration }}</span></h4>
-                                <h4><img src={{ r.0firstFlightAirlineLogo }} alt={{ r.0firstFlightAirline }}> {{ r.0firstFlightDepartureDate }} {{ r.0firstFlightDepartureAirport }}
-                                    <a href="#" data-toggle="tooltip" class="nounderline text-info" title={{ r.0firstFlightArrivalDuration }} duration>&#10230</a> {{ r.0firstFlightArrivalAirport }} {{ r.0firstFlightArrivalDate }}</h4>
-                                {% if r.0secondFlightDepartureAirport %}
-                                    <p class="nounderline elegantstyle">Connection duration is {{ r.0stop_time }}</p>
-                                    <h4><img src={{ r.0secondFlightAirlineLogo }} alt={{ r.0secondFlightAirline }}> {{ r.0secondFlightDepartureDate }} {{ r.0secondFlightDepartureAirport }}
-                                        <a href="#" data-toggle="tooltip" class="nounderline text-info" title={{ r.0secondFlightArrivalDuration }} duration>&#10230</a> {{ r.0secondFlightArrivalAirport }} {{ r.0secondFlightArrivalDate }}</h4>
-                                {% endif %}
-                                {% if r.1firstFlightDepartureAirport %}
-                            <hr class="newstyle">
-                            <h4 class="font-weight-light text-info pb-3">Return <span class="" style="color: black; font-size: 15px;">Total duration {{ r.1FlightTotalDuration }}</span></h4>
-                                    <h4><img src={{ r.1firstFlightAirlineLogo }} alt={{ r.1firstFlightAirline }}> {{ r.1firstFlightDepartureDate }} {{ r.1firstFlightDepartureAirport }}
-                                        <a href="#" data-toggle="tooltip" class="nounderline text-info" title={{ r.1firstFlightArrivalDuration }} duration>&#10230</a> {{ r.1firstFlightArrivalAirport }} {{ r.1firstFlightArrivalDate }}</h4>
-                                    {% if r.1secondFlightDepartureAirport %}
-                                        <p class="nounderline elegantstyle">Connection duration is {{ r.1stop_time }}</p>
-                                        <h4><img src={{ r.1secondFlightAirlineLogo }} alt={{ r.1secondFlightAirline }}> {{ r.1secondFlightDepartureDate }} {{ r.1secondFlightDepartureAirport }}
-                                            <a href="#" data-toggle="tooltip" class="nounderline text-info" title={{ r.1secondFlightArrivalDuration }} duration>&#10230</a> {{ r.1secondFlightArrivalAirport }} {{ r.1secondFlightArrivalDate }}</h4>
+        {% if response %}
+            <h3 class="login-heading mb-4 text-left">FLIGHT OFFERS SEARCH</h3>
+            {% for r, flight in response %}
+                {% if r.0firstFlightDepartureDate %}
+                    <div class="card mb-3 text-center" style="max-width: 40rem;">
+                        <div class="nounderline card-header text-center" style="font-size: 26;color: darkred;">${{ r.price }}
+                            <a href="{% url 'book_flight' flight %}"><input class="ml-2 btn btn-warning btn-lg text-uppercase font-weight-normal mb-2" type="Submit" name="bookFlight" value="Book Flight" /></a>
+                        </div>
+                        <div class="card-body">
+                            <div class="card-text">
+                                <h4 class="font-weight-light text-info pb-3">Departure <span class="smallstyle">Total duration {{ r.0FlightTotalDuration }}</span></h4>
+                                    <h4><img src={{ r.0firstFlightAirlineLogo }} alt={{ r.0firstFlightAirline }}> {{ r.0firstFlightDepartureDate }} {{ r.0firstFlightDepartureAirport }}
+                                        <a href="#" data-toggle="tooltip" class="nounderline text-info" title={{ r.0firstFlightArrivalDuration }} duration>&#10230</a> {{ r.0firstFlightArrivalAirport }} {{ r.0firstFlightArrivalDate }}</h4>
+                                    {% if r.0secondFlightDepartureAirport %}
+                                        <p class="nounderline elegantstyle">Connection duration is {{ r.0stop_time }}</p>
+                                        <h4><img src={{ r.0secondFlightAirlineLogo }} alt={{ r.0secondFlightAirline }}> {{ r.0secondFlightDepartureDate }} {{ r.0secondFlightDepartureAirport }}
+                                            <a href="#" data-toggle="tooltip" class="nounderline text-info" title={{ r.0secondFlightArrivalDuration }} duration>&#10230</a> {{ r.0secondFlightArrivalAirport }} {{ r.0secondFlightArrivalDate }}</h4>
                                     {% endif %}
-                            {% endif %}
+                                    {% if r.1firstFlightDepartureAirport %}
+                                <hr class="newstyle">
+                                <h4 class="font-weight-light text-info pb-3">Return <span class="" style="color: black; font-size: 15px;">Total duration {{ r.1FlightTotalDuration }}</span></h4>
+                                        <h4><img src={{ r.1firstFlightAirlineLogo }} alt={{ r.1firstFlightAirline }}> {{ r.1firstFlightDepartureDate }} {{ r.1firstFlightDepartureAirport }}
+                                            <a href="#" data-toggle="tooltip" class="nounderline text-info" title={{ r.1firstFlightArrivalDuration }} duration>&#10230</a> {{ r.1firstFlightArrivalAirport }} {{ r.1firstFlightArrivalDate }}</h4>
+                                        {% if r.1secondFlightDepartureAirport %}
+                                            <p class="nounderline elegantstyle">Connection duration is {{ r.1stop_time }}</p>
+                                            <h4><img src={{ r.1secondFlightAirlineLogo }} alt={{ r.1secondFlightAirline }}> {{ r.1secondFlightDepartureDate }} {{ r.1secondFlightDepartureAirport }}
+                                                <a href="#" data-toggle="tooltip" class="nounderline text-info" title={{ r.1secondFlightArrivalDuration }} duration>&#10230</a> {{ r.1secondFlightArrivalAirport }} {{ r.1secondFlightArrivalDate }}</h4>
+                                        {% endif %}
+                                {% endif %}
+                            </div>
                         </div>
                     </div>
-                </div>
-            {% endif %}
-        {% endfor %}
+                {% endif %}
+            {% endfor %}
+        {% else %}
+            <h4 class="login-heading mb-4 text-left">No flights found for this itinerary</h4>
+        {% endif %}
     </div>
 </div>
 
