@@ -1,5 +1,5 @@
 amadeus==5.0.0
-Django==2.2.18
+Django==2.2.20
 gunicorn==20.0.4
 isodate==0.6.0
 pycodestyle==2.5.0
