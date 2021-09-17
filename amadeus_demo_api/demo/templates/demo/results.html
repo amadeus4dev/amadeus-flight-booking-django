@@ -11,8 +11,9 @@
 
 <h3 class="login-heading mb-4 mt-4 pl-3">{{ origin }} &#x2708 {{ destination }} <br>{{ departureDate }}
 {% if returnDate %} <span class="text-info">&#10594&#10596</span> {{ returnDate }}{% endif %}</h3>
-
 {% if tripPurpose %} <h4 class="login-heading mb-4 mt-4 pl-3">Flying for <span style="font-size: 26;color: darkred;">{{ tripPurpose }} </span> purposes</h4> {% endif %}
+{% if documents %} <div class="mb-4 mt-4 pl-3"><span class="font-weight-bold">Entry documents: </span> {{ documents|striptags }} </div> {% endif %}
+{% if covid_tests %} <div class="mb-4 mt-4 pl-3"><span class="font-weight-bold">Mandatory tests: </span> {{ covid_tests|striptags }} </div> {% endif %}
 
 <div class="modal-body row">
     <div class="col-md-12 offset-3">
