@@ -8,16 +8,11 @@
     <title>Amadeus Demo API</title>
 </head>
 <body>
-
-<h3 class="login-heading mb-4 mt-4 pl-3">{{ origin }} &#x2708 {{ destination }} <br>{{ departureDate }}
-{% if returnDate %} <span class="text-info">&#10594&#10596</span> {{ returnDate }}{% endif %}</h3>
-
-{% if tripPurpose %} <h4 class="login-heading mb-4 mt-4 pl-3">Flying for <span style="font-size: 26;color: darkred;">{{ tripPurpose }} </span> purposes</h4> {% endif %}
-
-<div class="modal-body row">
-    <div class="col-md-12 offset-3">
+  <div class="row pt-5">
+    <div class="col-md-6">
+    <div class="col-md-12 offset-2">
         {% if response %}
-            <h3 class="login-heading mb-4 text-left">FLIGHT OFFERS SEARCH</h3>
+            <h3 class="login-heading mb-4 text-left">Available flights</h3>
             {% for r, flight in response %}
                 {% if r.0firstFlightDepartureDate %}
                     <div class="card mb-3 text-center" style="max-width: 40rem;">
@@ -54,8 +49,15 @@
             <h4 class="login-heading mb-4 text-left">No flights found for this itinerary</h4>
         {% endif %}
     </div>
-</div>
-
+  </div>
+    <div class="col-md-5">
+        <h3 class="login-heading pl-3">{{ origin }} &#x2708 {{ destination }} <br>{{ departureDate }}
+        {% if returnDate %} <span class="text-info">&#10594&#10596</span> {{ returnDate }}{% endif %}</h3>
+        {% if tripPurpose %} <h4 class="login-heading mb-4 mt-4 pl-3">Flying for <span style="font-size: 26;color: darkred;">{{ tripPurpose }} </span> purposes</h4> {% endif %}
+        {% if documents %} <div class="mb-4 mt-4 pl-3"><span class="font-weight-bold">Entry documents: </span> {{ documents|striptags }} </div> {% endif %}
+        {% if covid_tests %} <div class="mb-4 mt-4 pl-3"><span class="font-weight-bold">Mandatory tests: </span> {{ covid_tests|striptags }} </div> {% endif %}
+    </div>
+  </div>
 <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js"
         integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN"
         crossorigin="anonymous"></script>
