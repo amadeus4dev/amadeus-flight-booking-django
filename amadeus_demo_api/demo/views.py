@@ -60,9 +60,8 @@ def demo(request):
             return render(request, "demo/home.html", {})
 
         try:
-            search_country = amadeus.reference_data.locations.get(keyword=destination,
-                                                                  subType=Location.CITY)
-            country = search_country.data[0]["address"]["countryCode"]
+            country = search_flights.result['dictionaries'].get('locations').get(destination).get('countryCode')
+            # Get the travel restrictions for the destination
             travel_restrictions = amadeus.get('/v1/duty-of-care/diseases/covid19-area-report',
                                               countryCode=country)
             documents = travel_restrictions.data['areaAccessRestriction']['declarationDocuments']['text']
