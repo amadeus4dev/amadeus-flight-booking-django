@@ -32,7 +32,7 @@ Finally, start the container from the image:
 make run
 ```
 
-At this point you can open a browser and go to `https://0.0.0.0:8000`.
+At this point you can open a browser and go to `http://localhost:8000/`.
 
 Note that it is also possible to run in detached mode so your terminal is still
 usable:
