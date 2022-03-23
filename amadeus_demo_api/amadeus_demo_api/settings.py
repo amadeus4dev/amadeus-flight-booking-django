@@ -24,7 +24,7 @@ SECRET_KEY = 'q77h6c^4l2fkcbfwnusbaas#()#mp48hj@_93o#h_+62u%%2t8'
 
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = os.environ.get('DEBUG_VALUE', True)
-ALLOWED_HOSTS = ['amadeus4dev-book-flight.herokuapp.com', 'localhost']
+ALLOWED_HOSTS = ['amadeus4dev-book-flight.herokuapp.com', 'localhost', '0.0.0.0', '127.0.0.1']
 
 # Application definition
 
