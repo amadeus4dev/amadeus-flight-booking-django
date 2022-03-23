@@ -24,6 +24,7 @@ set:
 ```sh
 export AMADEUS_CLIENT_ID=YOUR_API_KEY
 export AMADEUS_CLIENT_SECRET=YOUR_API_SECRET
+export AMADEUS_HOSTNAME=test
 ```
 
 Finally, start the container from the image:
