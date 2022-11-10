@@ -62,10 +62,9 @@ def demo(request):
         try:
             country = search_flights.result['dictionaries'].get('locations').get(destination).get('countryCode')
             # Get the travel restrictions for the destination
-            travel_restrictions = amadeus.get('/v1/duty-of-care/diseases/covid19-area-report',
-                                              countryCode=country)
+            travel_restrictions = amadeus.duty_of_care.diseases.covid19_report.get(countryCode=country)
             documents = travel_restrictions.data['areaAccessRestriction']['declarationDocuments']['text']
-            covid_tests = travel_restrictions.data['areaAccessRestriction']['diseaseTesting']['text']
+            covid_tests = travel_restrictions.data['areaAccessRestriction']['travelTest']['travelTestConditionsAndRules'][0]['scenarios'][0]['condition']['textualScenario']
         except ResponseError as error:
             messages.add_message(
                 request, messages.ERROR, error.response.result["errors"][0]["detail"]
