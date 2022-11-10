@@ -7,7 +7,7 @@ With the Amadeus Self-Service APIs you can integrate flight booking capabilities
 
 We also return COVID-19 travel restrictions information with the [Travel Restrictions API](https://developers.amadeus.com/self-service/category/destination-content/api-doc/travel-restrictions) for the destination country. 
 
-The [application](https://amadeus4dev-book-flight.herokuapp.com) is also hosted, so you can play directly with it. 
+The [application](https://web-production-9bf3.up.railway.app/) is also hosted, so you can play directly with it. 
 
 ## How to run the project via Docker (recommended)
 
