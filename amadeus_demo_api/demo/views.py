@@ -58,16 +58,19 @@ def demo(request):
                 request, messages.ERROR, error.response.result["errors"][0]["detail"]
             )
             return render(request, "demo/home.html", {})
-
         try:
             country = search_flights.result['dictionaries'].get('locations').get(destination).get('countryCode')
             # Get the travel restrictions for the destination
             travel_restrictions = amadeus.duty_of_care.diseases.covid19_report.get(countryCode=country)
             documents = travel_restrictions.data['areaAccessRestriction']['declarationDocuments']['text']
-            covid_tests = travel_restrictions.data['areaAccessRestriction']['travelTest']['travelTestConditionsAndRules'][0]['scenarios'][0]['condition']['textualScenario']
-        except ResponseError as error:
+            covid_tests = ''
+            if 'text' in travel_restrictions.data['areaAccessRestriction']['travelTest']:
+                covid_tests = travel_restrictions.data['areaAccessRestriction']['travelTest']['text']
+            else:
+                covid_tests = travel_restrictions.data['areaAccessRestriction']['travelTest']['travelTestConditionsAndRules'][0]['scenarios'][0]['condition']['textualScenario']
+        except (ResponseError, KeyError, AttributeError) as error:
             messages.add_message(
-                request, messages.ERROR, error.response.result["errors"][0]["detail"]
+                request, messages.ERROR, 'No results found'
             )
             return render(request, "demo/home.html", {})
         search_flights_returned = []
@@ -132,7 +135,7 @@ def book_flight(request, flight):
         flight_price_confirmed = amadeus.shopping.flight_offers.pricing.post(
             ast.literal_eval(flight)
         ).data["flightOffers"]
-    except ResponseError as error:
+    except (ResponseError, KeyError, AttributeError) as error:
         messages.add_message(request, messages.ERROR, error.response.body)
         return render(request, "demo/book_flight.html", {})
 
@@ -141,7 +144,7 @@ def book_flight(request, flight):
         order = amadeus.booking.flight_orders.post(
             flight_price_confirmed, traveler
         ).data
-    except ResponseError as error:
+    except (ResponseError, KeyError, AttributeError) as error:
         messages.add_message(
             request, messages.ERROR, error.response.result["errors"][0]["detail"]
         )
@@ -160,7 +163,7 @@ def origin_airport_search(request):
             data = amadeus.reference_data.locations.get(
                 keyword=request.GET.get("term", None), subType=Location.ANY
             ).data
-        except ResponseError as error:
+        except (ResponseError, KeyError, AttributeError) as error:
             messages.add_message(
                 request, messages.ERROR, error.response.result["errors"][0]["detail"]
             )
@@ -173,7 +176,7 @@ def destination_airport_search(request):
             data = amadeus.reference_data.locations.get(
                 keyword=request.GET.get("term", None), subType=Location.ANY
             ).data
-        except ResponseError as error:
+        except (ResponseError, KeyError, AttributeError) as error:
             messages.add_message(
                 request, messages.ERROR, error.response.result["errors"][0]["detail"]
             )
