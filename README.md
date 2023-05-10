@@ -1,5 +1,8 @@
 # Flight booking engine
 
+![](amadeus_demo_api/screenshots/amadeus-flight-booking-django.png)
+![](amadeus_demo_api/screenshots/amadeus-flight-booking-django-2.png)
+
 With the Amadeus Self-Service APIs you can integrate flight booking capabilities in your application. In this prototype we demonstrate the end-to-end booking process, which works in conjunction with three APIs:
 * [Flight Offer Search](https://developers.amadeus.com/self-service/category/air/api-doc/flight-offers-search): to search for the best bookable flight offers.
 * [Flight Offer Price](https://developers.amadeus.com/self-service/category/air/api-doc/flight-offers-price):  confirms the latest price and availability of a specific chosen flight.
@@ -7,7 +10,7 @@ With the Amadeus Self-Service APIs you can integrate flight booking capabilities
 
 We also return COVID-19 travel restrictions information with the [Travel Restrictions API](https://developers.amadeus.com/self-service/category/destination-content/api-doc/travel-restrictions) for the destination country. 
 
-The [application](https://web-production-9bf3.up.railway.app/) is also hosted, so you can play directly with it. 
+The [application](https://flight-booking-engine.azurewebsites.net/) is also hosted, so you can play directly with it. 
 
 ## How to run the project via Docker (recommended)
 
