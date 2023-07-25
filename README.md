@@ -1,7 +1,7 @@
 # Flight booking engine
 
-![](amadeus_demo_api/screenshots/amadeus-flight-booking-django.png)
-![](amadeus_demo_api/screenshots/amadeus-flight-booking-django-2.png)
+![](amadeus_demo_api/images/form.png)
+![](amadeus_demo_api/images/results.png)
 
 With the Amadeus Self-Service APIs you can integrate flight booking capabilities in your application. In this prototype we demonstrate the end-to-end booking process, which works in conjunction with three APIs:
 * [Flight Offer Search](https://developers.amadeus.com/self-service/category/air/api-doc/flight-offers-search): to search for the best bookable flight offers.
