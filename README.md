@@ -8,7 +8,7 @@ With the Amadeus Self-Service APIs you can integrate flight booking capabilities
 * [Flight Offer Price](https://developers.amadeus.com/self-service/category/air/api-doc/flight-offers-price):  confirms the latest price and availability of a specific chosen flight.
 * [Flight Create Orders](https://developers.amadeus.com/self-service/category/air/api-doc/flight-create-orders): to book flights and ancillary services proposed by the airline.
 
-We also return COVID-19 travel restrictions information with the [Travel Restrictions API](https://developers.amadeus.com/self-service/category/destination-content/api-doc/travel-restrictions) for the destination country. 
+We also return travel information such as visa requirements, possible trip disruptions etc. for the destination country with the [Travel Search API](https://riskline.com/worldinsights/travel-search/api/)  provided by Riskline.
 
 The [application](https://flight-booking-engine.azurewebsites.net/) is also hosted, so you can play directly with it. 
 
@@ -28,6 +28,12 @@ set:
 export AMADEUS_CLIENT_ID=YOUR_API_KEY
 export AMADEUS_CLIENT_SECRET=YOUR_API_SECRET
 export AMADEUS_HOSTNAME=test
+```
+
+If you also want to include the Travel Search API get in touch with Riskline to get an access token
+
+```sh
+export RISKLINE_ACCESS_TOKEN=YOUR_RISKLINE_ACCESS_TOKEN
 ```
 
 Finally, start the container from the image:
@@ -92,7 +98,14 @@ or
 export AMADEUS_HOSTNAME="production"
 ```
 
+
 > Each environment has different API keys. Do not forget to update them!
+
+If you want to include the Travel Search API get in touch with Riskline to get an access token.
+
+```sh
+export RISKLINE_ACCESS_TOKEN=YOUR_RISKLINE_ACCESS_TOKEN
+```
 
 Finally, run the Django server.
 

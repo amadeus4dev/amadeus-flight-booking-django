@@ -54,8 +54,13 @@
         <h3 class="login-heading pl-3">{{ origin }} &#x2708 {{ destination }} <br>{{ departureDate }}
         {% if returnDate %} <span class="text-info">&#10594&#10596</span> {{ returnDate }}{% endif %}</h3>
         {% if tripPurpose %} <h4 class="login-heading mb-4 mt-4 pl-3">Flying for <span style="font-size: 26;color: darkred;">{{ tripPurpose }} </span> purposes</h4> {% endif %}
-        {% if documents %} <div class="mb-4 mt-4 pl-3"><span class="font-weight-bold">Entry documents: </span> {{ documents|striptags }} </div> {% endif %}
-        {% if covid_tests %} <div class="mb-4 mt-4 pl-3"><span class="font-weight-bold">Entry tests: </span> {{ covid_tests|striptags }} </div> {% endif %}
+        {% if trip_assessment %} <div class="mb-4 mt-4 pl-3"><span class="font-weight-bold">Trip assessment: </span> {{ trip_assessment|striptags }} </div> {% endif %}
+        {% if possible_travel_disruptions %} <div class="mb-4 mt-4 pl-3"><span class="font-weight-bold">Possible disruptions: </span> {{ possible_travel_disruptions|striptags }} </div> {% endif %}
+        {% if annual_events %} <div class="mb-4 mt-4 pl-3"><span class="font-weight-bold">Annual events: </span> {{ annual_events|striptags }} </div> {% endif %}
+        {% if visa_rules %} <div class="mb-4 mt-4 pl-3"><span class="font-weight-bold">Visa rules: </span> {{ visa_rules|striptags }} </div> {% endif %}
+        {% if vaccinations %} <div class="mb-4 mt-4 pl-3"><span class="font-weight-bold">Vaccination needed: </span> {{ vaccinations|striptags }} </div> {% endif %}
+        {% if insurance_documents %} <div class="mb-4 mt-4 pl-3"><span class="font-weight-bold">Insurance Documents: </span> {{ insurance_documents|striptags }} </div> {% endif %}
+
     </div>
   </div>
 <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js"

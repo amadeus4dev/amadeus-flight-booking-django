@@ -1,5 +1,7 @@
 import json
 import ast
+import os
+import requests
 from amadeus import Client, ResponseError, Location
 from django.shortcuts import render
 from django.contrib import messages
@@ -36,6 +38,7 @@ def demo(request):
             "destinationLocationCode": destination,
             "departureDate": departure_date,
             "returnDate": return_date,
+            "max": 1
         }
         try:
             # Calls Trip Purpose Prediction API
@@ -59,15 +62,57 @@ def demo(request):
             )
             return render(request, "demo/home.html", {})
         try:
-            country = search_flights.result['dictionaries'].get('locations').get(destination).get('countryCode')
-            # Get the travel restrictions for the destination
-            travel_restrictions = amadeus.duty_of_care.diseases.covid19_report.get(countryCode=country)
-            documents = travel_restrictions.data['areaAccessRestriction']['declarationDocuments']['text']
-            covid_tests = ''
-            if 'text' in travel_restrictions.data['areaAccessRestriction']['travelTest']:
-                covid_tests = travel_restrictions.data['areaAccessRestriction']['travelTest']['text']
-            else:
-                covid_tests = travel_restrictions.data['areaAccessRestriction']['travelTest']['travelTestConditionsAndRules'][0]['scenarios'][0]['condition']['textualScenario']
+            if os.environ.get('RISKLINE_ACCESS_TOKEN'): 
+                trip_assessment = ''
+                possible_travel_disruptions = ''
+                annual_events = ''
+                visa_rules = ''
+                vaccinations = ''
+                insurance_documents = ''
+                
+
+                destination_country = search_flights.result['dictionaries'].get('locations').get(destination).get('countryCode')
+                orgin_country = search_flights.result['dictionaries'].get('locations').get(origin).get('countryCode')
+                url = "https://api.riskline.com/ext/v1/travel-search"
+
+                payload = json.dumps({
+                "nationality": orgin_country,
+                "origin": orgin_country,
+                "destination": destination_country,
+                "dates": {
+                    "from": departure_date,
+                    "to": return_date
+                }
+                })
+                headers = {
+                    'Authorization': 'Bearer ' + os.environ.get('RISKLINE_ACCESS_TOKEN'),
+                    'Content-Type': 'application/json'
+                }
+
+                response = requests.request("POST", url, headers=headers, data=payload)
+                print(response.json)
+                trip_assessment = response.json()['overall_trip_assessment']['answer']
+                possible_travel_disruptions = response.json()['possible_travel_disruptions']['advisories'][0]['title']
+                if 'annual_events' in response.json()['possible_travel_disruptions']:
+                    annual_events_list = response.json()['possible_travel_disruptions']['annual_events']
+                    if annual_events_list:
+                        if 'date' in annual_events_list[0]:
+                            annual_events = annual_events_list[0]['date'] + ', ' + annual_events_list[0]['name']
+                if 'documents_required' in response.json() and 'entry' in response.json()['documents_required']:
+                    entry_info = response.json()['documents_required']['entry']
+                    if 'visa_rules' in entry_info:
+                            visa_rules_list = entry_info['visa_rules']
+                            if visa_rules_list:
+                                visa_rules = visa_rules_list[0]['text']
+                    if 'vaccinations' in entry_info:
+                        vaccinations_list = entry_info['vaccinations']
+                        if vaccinations_list:
+                            vaccinations = vaccinations_list[0]['name'] + ' ' + vaccinations_list[0]['description']
+                    if 'insurance_documents' in entry_info:
+                            insurance_documents_list = entry_info['insurance_documents']
+                            if insurance_documents_list:
+                                insurance_documents = insurance_documents_list[0]['text']
+
         except (ResponseError, KeyError, AttributeError) as error:
             messages.add_message(
                 request, messages.ERROR, 'No results found'
@@ -90,16 +135,20 @@ def demo(request):
                 "departureDate": departure_date,
                 "returnDate": return_date,
                 "tripPurpose": tripPurpose,
-                "country": country,
-                "documents": documents,
-                "covid_tests": covid_tests
+                "destination_country": destination_country,
+                "trip_assessment": trip_assessment,
+                "possible_travel_disruptions": possible_travel_disruptions,
+                "annual_events": annual_events,
+                "visa_rules": visa_rules,
+                "insurance_documents": insurance_documents,
+                "vaccinations": vaccinations
             },
         )
     return render(request, "demo/home.html", {})
 
 
 def book_flight(request, flight):
-    # Create a fake traveler profile for booking
+    # Create a dummy traveler profile for booking
     traveler = {
         "id": "1",
         "dateOfBirth": "1982-01-16",
