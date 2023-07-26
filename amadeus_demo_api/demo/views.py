@@ -11,7 +11,6 @@ from django.http import HttpResponse
 
 amadeus = Client()
 
-
 def demo(request):
     # Retrieve data from the UI form
     origin = request.POST.get("Origin")
@@ -19,12 +18,20 @@ def demo(request):
     departure_date = request.POST.get("Departuredate")
     return_date = request.POST.get("Returndate")
 
+    trip_assessment = ''
+    possible_travel_disruptions = ''
+    annual_events = ''
+    visa_rules = ''
+    vaccinations = ''
+    insurance_documents = ''
+
     # Prepare url parameters for search
     kwargs = {
         "originLocationCode": origin,
         "destinationLocationCode": destination,
         "departureDate": departure_date,
         "adults": 1,
+        "max": 8
     }
 
     # For a round trip, we use AI Trip Purpose Prediction
@@ -56,6 +63,8 @@ def demo(request):
     if origin and destination and departure_date:
         try:
             search_flights = amadeus.shopping.flight_offers_search.get(**kwargs)
+            destination_country = search_flights.result['dictionaries'].get('locations').get(destination).get('countryCode')
+            orgin_country = search_flights.result['dictionaries'].get('locations').get(origin).get('countryCode')
         except ResponseError as error:
             messages.add_message(
                 request, messages.ERROR, error.response.result["errors"][0]["detail"]
@@ -63,16 +72,7 @@ def demo(request):
             return render(request, "demo/home.html", {})
         try:
             if os.environ.get('RISKLINE_ACCESS_TOKEN'): 
-                trip_assessment = ''
-                possible_travel_disruptions = ''
-                annual_events = ''
-                visa_rules = ''
-                vaccinations = ''
-                insurance_documents = ''
-                
-
-                destination_country = search_flights.result['dictionaries'].get('locations').get(destination).get('countryCode')
-                orgin_country = search_flights.result['dictionaries'].get('locations').get(origin).get('countryCode')
+                print('mesa')
                 url = "https://api.riskline.com/ext/v1/travel-search"
 
                 payload = json.dumps({
@@ -89,8 +89,10 @@ def demo(request):
                     'Content-Type': 'application/json'
                 }
 
+                print(str(payload))
+
                 response = requests.request("POST", url, headers=headers, data=payload)
-                print(response.json)
+                print(response.json())
                 trip_assessment = response.json()['overall_trip_assessment']['answer']
                 possible_travel_disruptions = response.json()['possible_travel_disruptions']['advisories'][0]['title']
                 if 'annual_events' in response.json()['possible_travel_disruptions']:
@@ -106,8 +108,9 @@ def demo(request):
                                 visa_rules = visa_rules_list[0]['text']
                     if 'vaccinations' in entry_info:
                         vaccinations_list = entry_info['vaccinations']
-                        if vaccinations_list:
+                        if vaccinations_list and vaccinations_list[0]['name'] and vaccinations_list[0]['description']:
                             vaccinations = vaccinations_list[0]['name'] + ' ' + vaccinations_list[0]['description']
+
                     if 'insurance_documents' in entry_info:
                             insurance_documents_list = entry_info['insurance_documents']
                             if insurance_documents_list:
@@ -210,7 +213,7 @@ def origin_airport_search(request):
     if request.is_ajax():
         try:
             data = amadeus.reference_data.locations.get(
-                keyword=request.GET.get("term", None), subType=Location.ANY
+                keyword=request.GET.get("term", None), subType=Location.AIRPORT
             ).data
         except (ResponseError, KeyError, AttributeError) as error:
             messages.add_message(
@@ -223,7 +226,7 @@ def destination_airport_search(request):
     if request.is_ajax():
         try:
             data = amadeus.reference_data.locations.get(
-                keyword=request.GET.get("term", None), subType=Location.ANY
+                keyword=request.GET.get("term", None), subType=Location.AIRPORT
             ).data
         except (ResponseError, KeyError, AttributeError) as error:
             messages.add_message(

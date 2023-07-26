@@ -30,7 +30,7 @@ export AMADEUS_CLIENT_SECRET=YOUR_API_SECRET
 export AMADEUS_HOSTNAME=test
 ```
 
-If you also want to include the Travel Search API get in touch with Riskline to get an access token
+If you also want to include the Travel Search API get in touch with Riskline to get an access token.
 
 ```sh
 export RISKLINE_ACCESS_TOKEN=YOUR_RISKLINE_ACCESS_TOKEN
