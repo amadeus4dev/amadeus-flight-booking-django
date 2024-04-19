@@ -5,12 +5,12 @@
           integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
     <link rel="stylesheet" type="text/css" href="{% static 'demo/style.css' %}">
     <meta charset="UTF-8">
-    <title>Amadeus Demo API</title>
+    <title>Amadeus Flight Booking</title>
 </head>
 <body>
   <div class="row pt-5">
     <div class="col-md-6">
-    <div class="col-md-12 offset-2">
+    <div class="col-md-12 offset-1">
         {% if response %}
             <h3 class="login-heading mb-4 text-left">Available flights</h3>
             {% for r, flight in response %}
@@ -54,8 +54,6 @@
         <h3 class="login-heading pl-3">{{ origin }} &#x2708 {{ destination }} <br>{{ departureDate }}
         {% if returnDate %} <span class="text-info">&#10594&#10596</span> {{ returnDate }}{% endif %}</h3>
         {% if tripPurpose %} <h4 class="login-heading mb-4 mt-4 pl-3">Flying for <span style="font-size: 26;color: darkred;">{{ tripPurpose }} </span> purposes</h4> {% endif %}
-        {% if documents %} <div class="mb-4 mt-4 pl-3"><span class="font-weight-bold">Entry documents: </span> {{ documents|striptags }} </div> {% endif %}
-        {% if covid_tests %} <div class="mb-4 mt-4 pl-3"><span class="font-weight-bold">Entry tests: </span> {{ covid_tests|striptags }} </div> {% endif %}
     </div>
   </div>
 <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js"
