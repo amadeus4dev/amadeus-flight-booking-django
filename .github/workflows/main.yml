@@ -45,6 +45,10 @@ jobs:
           echo "AMADEUS_CLIENT_ID=${{secrets.AMADEUS_CLIENT_ID}}" > ~/flight-booking.env
           echo "AMADEUS_CLIENT_SECRET=${{secrets.AMADEUS_CLIENT_SECRET}}" >> ~/flight-booking.env
           echo "HOST_URL=${{secrets.HOST_URL}}" >> ~/flight-booking.env
+
+          docker rmi ${{ secrets.DOCKER_USERNAME }}/amadeusflightbookingdjango:${{ github.sha }} || true
+          docker system prune -af --volumes || true
+          
           docker pull ${{ secrets.DOCKER_USERNAME }}/amadeusflightbookingdjango:${{ github.sha }}
           docker stop flight-booking || true
           docker rm flight-booking || true
