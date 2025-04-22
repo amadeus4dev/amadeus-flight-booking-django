@@ -42,8 +42,8 @@ jobs:
         key: ${{ secrets.EC2_SSH_KEY }}
         port: 22
         script: |
-          #echo "AMADEUS_CLIENT_ID=${{secrets.AMADEUS_CLIENT_ID}}" > ~/flight-booking.env
-          #echo "AMADEUS_CLIENT_SECRET=${{secrets.AMADEUS_CLIENT_SECRET}}" >> ~/flight-booking.env
+          echo "AMADEUS_CLIENT_ID=${{secrets.AMADEUS_CLIENT_ID}}" > ~/flight-booking.env
+          echo "AMADEUS_CLIENT_SECRET=${{secrets.AMADEUS_CLIENT_SECRET}}" >> ~/flight-booking.env
           echo "HOST_URL=${{secrets.HOST_URL}}" >> ~/flight-booking.env
           docker pull ${{ secrets.DOCKER_USERNAME }}/amadeusflightbookingdjango:${{ github.sha }}
           docker stop flight-booking || true
