@@ -138,7 +138,6 @@ def book_flight(request, flight):
 
     return render(request, "demo/book_flight.html", {"response": passenger_name_record})
 
-
 def origin_airport_search(request):
     if request.is_ajax():
         try:
