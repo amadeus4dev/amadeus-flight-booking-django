@@ -36,8 +36,13 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    'rest_framework',
+    'rest_framework_simplejwt',
     'demo',
-    'chat'
+    'chat',
+    'users',
+    'booking',
+    'chatbot',
 ]
 
 MIDDLEWARE = [
@@ -106,6 +111,8 @@ AUTH_PASSWORD_VALIDATORS = [
     },
 ]
 
+AUTH_USER_MODEL = 'users.User'
+
 
 # Internationalization
 # https://docs.djangoproject.com/en/2.2/topics/i18n/
@@ -134,3 +141,8 @@ os.makedirs(STATIC_ROOT, exist_ok=True)
 STATICFILES_DIRS = (
     os.path.join(BASE_DIR, 'static'),
 )
+REST_FRAMEWORK = {
+    'DEFAULT_AUTHENTICATION_CLASSES': (
+        'rest_framework_simplejwt.authentication.JWTAuthentication',
+    )
+}

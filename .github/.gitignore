@@ -1,2 +1,29 @@
-./*.env
-./*.pyc
+# Python
+*.pyc
+*.pyo
+*.pyd
+__pycache__/
+
+# Django
+db.sqlite3
+*.sqlite3
+media/
+static/
+staticfiles/
+static_root/
+
+# Env
+venv/
+.env
+
+# IDE
+.vscode/
+.idea/
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Django migration cache (optional)
+**/migrations/*.pyc
+**/migrations/__pycache__/
