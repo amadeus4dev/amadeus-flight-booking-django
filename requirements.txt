@@ -8,4 +8,4 @@ six==1.13.0
 sqlparse==0.3.0
 whitenoise==5.0.1
 djangorestframework
-rest_framework_simplejwt
+djangorestframework-simplejwt
