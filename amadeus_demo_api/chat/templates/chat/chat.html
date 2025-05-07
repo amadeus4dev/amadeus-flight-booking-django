@@ -814,8 +814,29 @@
 				isFirstSubmit = false;
 			}
 
+			let matchingAnswer=''
 			// 백엔드 api에서 받아온 답변 출력
-			let matchingAnswer = "임시 답변"
+			fetch('../api/booking/search/',{
+				method: 'POST',
+				headers: {
+					'Content-Type': 'application/json',
+					// 필요하다면 CSRF 토큰도 같이 보내야 함
+				},
+				body: JSON.stringify({
+					"originLocationCode": "***",
+					"destinationLocationCode": "***",
+					"departureDate": "2025-05-10",
+					"aduluts": 1
+				})
+			})
+			.then(response => response.json())
+			.then(data => {
+				matchingAnswer = data.answer;
+			})
+			.catch(error => {
+				console.error('Error:', error);
+    		});
+			
 
 			// Adds the user's request to the conversation
 			const lightMode1 = document.querySelector(".icon-1x1-semimedium.is-light-mode");
