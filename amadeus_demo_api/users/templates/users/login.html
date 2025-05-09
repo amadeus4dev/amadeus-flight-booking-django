@@ -1,0 +1,55 @@
+<!-- templates/login.html -->
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>로그인</title>
+    {% load static %}
+    <script src="{% static 'js/getCookie.js' %}"></script>
+    <script>
+        const csrftoken = getCookie('csrftoken')
+        console.log(csrftoken)
+        // 로그인 요청 함수
+        function login() {
+            const username = document.getElementById('username').value;
+            const password = document.getElementById('password').value;
+
+            fetch('/api/login/', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'X-CSRFToken' : csrftoken,
+                },
+                body: JSON.stringify({
+                    'username': username,
+                    'password': password
+                })
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.access) {
+                    // JWT 토큰을 localStorage에 저장
+                    localStorage.setItem('refreshToken', data.refresh);
+                    localStorage.setItem('accessToken', data.access);
+                    alert('로그인 성공');
+                } else {
+                    alert('로그인 실패');
+                }
+            })
+            .catch(error => {
+                console.error('로그인 오류:', error);
+                alert('로그인 요청 중 오류 발생');
+            });
+        }
+    </script>
+</head>
+<body>
+    <h1>로그인</h1>
+        <label for="username">아이디:</label>
+        <input type="text" id="username" name="username" required><br>
+        <label for="password">비밀번호:</label>
+        <input type="password" id="password" name="password" required><br>
+        <button type="button" onclick="login()">로그인</button>
+</body>
+</html>

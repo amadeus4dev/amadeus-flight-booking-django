@@ -42,7 +42,7 @@ INSTALLED_APPS = [
     'chat',
     'users',
     'booking',
-    'chatbot',
+    'chatbot'
 ]
 
 MIDDLEWARE = [
