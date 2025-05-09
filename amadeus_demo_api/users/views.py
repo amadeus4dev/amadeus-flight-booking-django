@@ -2,11 +2,16 @@ from rest_framework import generics
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
 from rest_framework import status
+from django.views import View
+from django.shortcuts import render
 from rest_framework.views import APIView
 from .models import User, PassportInfo
 from .serializers import RegisterSerializer, PassportInfoSerializer
 from rest_framework_simplejwt.views import TokenObtainPairView
 from rest_framework_simplejwt.serializers import TokenObtainPairSerializer
+import json
+from django.contrib.auth import authenticate
+from django.http import JsonResponse
 
 
 class RegisterView(generics.CreateAPIView):
@@ -34,8 +39,6 @@ class PassportInfoListView(APIView):
         serializer = PassportInfoSerializer(passports, many=True)
         return Response(serializer.data, status=status.HTTP_200_OK)
 
-from rest_framework_simplejwt.views import TokenObtainPairView
-from rest_framework_simplejwt.serializers import TokenObtainPairSerializer
 
 class CustomTokenObtainPairSerializer(TokenObtainPairSerializer):
     @classmethod
@@ -47,5 +50,35 @@ class CustomTokenObtainPairSerializer(TokenObtainPairSerializer):
         token['email'] = user.email_address
         return token
 
+
+class LoginAPI(APIView):
+    def post(self, request):
+        try:
+            data = json.loads(request.body)
+            username = data.get('username')
+            password = data.get('password')
+        except json.JSONDecodeError:
+            return JsonResponse({'error': 'Invalid JSON'}, status=400)
+
+        # 사용자 인증
+        user_obj = authenticate(request, username=username, password=password)
+        if user_obj is not None:
+            # JWT 토큰 생성
+            refresh = CustomTokenObtainPairSerializer.get_token(user_obj)
+            access_token = str(refresh.access_token)
+
+            return JsonResponse({'access': access_token}, status=200)
+        else:
+            print("user not match")
+            print(username)
+            print(password)
+            return JsonResponse({'error': 'Invalid credentials'}, status=400)
+
+
 class CustomTokenObtainPairView(TokenObtainPairView):
     serializer_class = CustomTokenObtainPairSerializer
+
+# 프론트엔드 (로그인 화면 렌더링)
+class LoginView(View):
+    def get(self, request):
+        return render(request, 'users/login.html')
