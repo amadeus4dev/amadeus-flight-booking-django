@@ -6,7 +6,7 @@ urlpatterns = [
     path('chat/', include('chat.urls')),
     path('login/', include('users.urls_front')),
     
-    path('', include('demo.urls')),
+    #path('', include('demo.urls')),
     path('api/', include('users.urls')),
     path('api/', include('chatbot.urls')),
     path('api/', include('booking.urls')),

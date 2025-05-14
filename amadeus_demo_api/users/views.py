@@ -82,3 +82,11 @@ class CustomTokenObtainPairView(TokenObtainPairView):
 class LoginView(View):
     def get(self, request):
         return render(request, 'users/login.html')
+    
+
+class UserMeView(APIView):#유저 정보보
+    permission_classes = [IsAuthenticated]
+
+    def get(self, request):
+        serializer = RegisterSerializer(request.user)
+        return Response(serializer.data)
