@@ -9,10 +9,7 @@ class ChatHistory(models.Model):
     
     def __str__(self):
         return f"{self.user.username} - {self.timestamp}"
-    
 
-from django.db import models
-from users.models import User
 
 class ChatbotFlightActionLog(models.Model):
     ACTION_TYPES = [
