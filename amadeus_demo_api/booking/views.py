@@ -3,7 +3,7 @@ from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework import status
 from .amadeus import AmadeusService
-from .models import FlightOrder,FlightCancelLog, FlightOrderRetrieveLog
+from .models import FlightOrder,FlightCancelLog, FlightOrderRetrieveLog,FlightOfferCandidate, FlightSearchRecord
 from users.models import PassportInfo
 from users.models import User
 from rest_framework.permissions import IsAuthenticated
@@ -39,17 +39,60 @@ class FlightSearchView(APIView):
 
         # Step 2: FlightOffers만 추출해서 Pricing용 Payload 변환
         try:
+            top_5_offers = search_result.get("data", [])[:5]
+            search_record = FlightSearchRecord.objects.create(
+                user=request.user,
+                origin=search_payload["originLocationCode"],
+                destination=search_payload["destinationLocationCode"],
+                departure_date=search_payload["departureDate"],
+                adults=search_payload["adults"]
+            )
+
+            for offer in top_5_offers:
+                segments = offer["itineraries"][0]["segments"]
+                first_seg = segments[0]
+                last_seg = segments[-1]
+                FlightOfferCandidate.objects.create(
+                    search=search_record,
+                    offer_id=offer["id"],
+                    offer_json=offer,#여기부터 요약 정보
+                    airline=offer["validatingAirlineCodes"][0],
+                    departure_airport=first_seg["departure"]["iataCode"],
+                    arrival_airport=last_seg["arrival"]["iataCode"],
+                    departure_time=first_seg["departure"]["at"],
+                    arrival_time=last_seg["arrival"]["at"],
+                    price=f'{offer["price"]["grandTotal"]} {offer["price"]["currency"]}',
+                    number_of_stops=len(segments) - 1
+                )
             pricing_payload = {
                 "data": {
                     "type": "flight-offers-pricing",
-                    "flightOffers": search_result["data"]
+                    "flightOffers": top_5_offers
                 }
             }
+            summery_payload = {
+                    "search_id": search_record.id,
+                    "flightOffers": [
+                        {
+                            "id": offer["id"],
+                            "departure_airport": first_seg["departure"]["iataCode"],
+                            "arrival_airport": last_seg["arrival"]["iataCode"],
+                            "departure_time": first_seg["departure"]["at"],
+                            "arrival_time": last_seg["arrival"]["at"],
+                            "price": f'{offer["price"]["grandTotal"]} {offer["price"]["currency"]}',
+                            "airline": offer["validatingAirlineCodes"][0],
+                            "number_of_stops": len(segments) - 1
+                        }
+                        for offer in top_5_offers
+                    ]
+            }
+
         except KeyError:
             return Response({"error": "Search result missing flightOffers."}, status=400)
 
-        return Response(pricing_payload, status=200)
-
+        #return Response(pricing_payload, status=200)
+        return Response(summery_payload, status=200)
+    
 class FlightPriceView(APIView):
     def post(self, request):
         url = f"{AMADEUS_API_BASE_URL}/v1/shopping/flight-offers/pricing"
@@ -197,6 +240,30 @@ class FlightCreateOrderView(APIView):
             return "ADULT"
         else:
             return "CHILD"
+
+class FlightCreateOrderByIndexView(APIView):
+    permission_classes = [IsAuthenticated]
+
+    def post(self, request):
+        number = request.data.get("number")  # 챗봇이 보내는 항공편 선택 번호
+
+        if not number:
+            return Response({"error": "number 필드가 필요합니다."}, status=400)
+
+        try:
+            # 최신 검색 기준으로 최대 5개 중 선택
+            offers = FlightOfferCandidate.objects.filter(
+                search__user=request.user
+            ).order_by("-search__created_at", "created_at")[:5]
+
+            selected_offer = offers[int(number) - 1]
+            flight_offer = selected_offer.offer_json
+        except (IndexError, ValueError):
+            return Response({"error": f"{number}번 항공편을 찾을 수 없습니다."}, status=404)
+
+        # 기존 예약 로직 재활용
+        return FlightCreateOrderView.create_with_offer(request, flight_offer)
+
 
 class FlightOrderRetrieveView(APIView):
     permission_classes = [IsAuthenticated]
