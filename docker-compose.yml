@@ -1,0 +1,37 @@
+version: '3.8'
+
+services:
+  django:
+    # Django 서비스 설정
+    build:
+      context: .
+      dockerfile: Dockerfile  # Django의 Dockerfile 경로
+    container_name: django_server
+    ports:
+      - "8081:8000"  # 호스트의 8081번 포트를 컨테이너의 8000번 포트에 연결
+    volumes:
+      - ./amadeus:/code  # Django 프로젝트 폴더를 컨테이너에 연결
+    depends_on:
+      - fastapi  # Django는 FastAPI가 준비된 후에 실행될 수 있음
+    networks:
+      - app_network
+    environment:
+    - AMADEUS_CLIENT_ID=DhCT3tJ0mO3QHrcGvHeghMm0HxW5RVQI
+    - AMADEUS_CLIENT_SECRET=gmVDGuVJeeIgs4AA
+
+  fastapi:
+    # FastAPI 서비스 설정
+    build:
+      context: ./ai
+      dockerfile: Dockerfile  # FastAPI의 Dockerfile 경로
+    container_name: fastapi_server
+    ports:
+      - "8080:8080"  # 호스트의 8080번 포트를 컨테이너의 8080번 포트에 연결
+    volumes:
+      - ./ai:/app  # FastAPI 프로젝트 폴더를 컨테이너에 연결
+    networks:
+      - app_network
+
+networks:
+  app_network:
+    driver: bridge
