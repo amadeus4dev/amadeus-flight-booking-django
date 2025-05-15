@@ -9,6 +9,22 @@ class FlightSearchRecord(models.Model):
     adults = models.IntegerField()
     created_at = models.DateTimeField(auto_now_add=True)
 
+
+class FlightOfferCandidate(models.Model):
+    search = models.ForeignKey(FlightSearchRecord, on_delete=models.CASCADE, related_name='offers')
+    offer_id = models.CharField(max_length=50)  # Amadeus flight offer ID
+    offer_json = models.JSONField()             # Amadeus 응답 전체 저장
+    #요약 저장
+    airline = models.CharField(max_length=10)        # validatingAirlineCodes[0]
+    departure_airport = models.CharField(max_length=3)
+    arrival_airport = models.CharField(max_length=3)
+    departure_time = models.DateTimeField()
+    arrival_time = models.DateTimeField()
+    price = models.CharField(max_length=20)          # 예: "1204.51 USD"
+    number_of_stops = models.IntegerField()
+
+    created_at = models.DateTimeField(auto_now_add=True)
+
 class FlightOrder(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE)
     flight_order_id = models.CharField(max_length=255, unique=True)
@@ -30,3 +46,4 @@ class FlightOrderRetrieveLog(models.Model):
     flight_order = models.ForeignKey(FlightOrder, on_delete=models.CASCADE)
     retrieve_response_payload = models.JSONField()
     created_at = models.DateTimeField(auto_now_add=True)
+

@@ -19,6 +19,12 @@ class AmadeusService:
                 'client_secret': AMADEUS_CLIENT_SECRET
             }
             response = requests.post(url, data=data)
+            print("ENV client_id:", AMADEUS_CLIENT_ID)
+            print("ENV client_secret:", AMADEUS_CLIENT_SECRET)
+            print("Amadeus token 요청 결과:")
+            print("요청 data:", data)
+            print("응답 상태코드:", response.status_code)
+            print("응답 본문:", response.text)
             response.raise_for_status()
             cls.access_token = response.json()['access_token']
         return cls.access_token
