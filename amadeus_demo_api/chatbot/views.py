@@ -6,7 +6,8 @@ from rest_framework.permissions import IsAuthenticated
 from .models import ChatHistory
 from .serializers import ChatHistorySerializer
 from .models import ChatbotFlightActionLog
-
+from booking.dispatch import *
+from django.test.client import RequestFactory
 class ChatHistoryView(APIView):
     permission_classes = [IsAuthenticated]
 
@@ -29,30 +30,17 @@ class AskChatbotView(APIView):
             return Response({"error": "질문이 필요합니다."}, status=400)
 
         user = request.user
-
-        chat_records = ChatHistory.objects.filter(user=request.user).order_by('timestamp')
-        chat_history_list = []
-
-        for record in chat_records:
-            chat_history_list.append(record.question)
-            chat_history_list.append(record.answer)
-        # 기존 대화 기록 가져오기
-        # chat_records = ChatHistory.objects.filter(user=user).order_by('timestamp')
-        # chat_history_data = [{"question": r.question, "answer": r.answer} for r in chat_records]
-
-        # 마지막 질문 추가
+        chat_records = ChatHistory.objects.filter(user=user).order_by('timestamp')
+        chat_history_list = [q for record in chat_records for q in (record.question, record.answer)]
         chat_history_list.append(question)
 
-        # AI 서버로 전달할 payload
         payload = {
-            #"user_id": user.id,
             "chat_history": chat_history_list
         }
-        return Response(payload, status=200)
-        # AI 서버에 POST 요청 보내기
+
         try:
             ai_response = requests.post(
-                "http://",
+                "http://fastapi:8080/question",
                 json=payload,
                 timeout=5
             )
@@ -60,17 +48,21 @@ class AskChatbotView(APIView):
         except Exception as e:
             return Response({"error": "AI 서버 연결 실패", "detail": str(e)}, status=500)
 
-        # 응답 저장
-        answer = ai_data.get("answer", "죄송합니다. 답변을 찾지 못했습니다.")
-        ChatHistory.objects.create(user=user, question=question, answer=answer)
+        # 질문 기록 먼저 저장
+        ChatHistory.objects.create(user=user, question=question, answer=str(ai_data))
 
-        # 사용자에게 응답 반환
-        return Response({
-            "question": question,
-            "answer": answer
-        })
+        # dispatcher로 넘기기
+        # request.data를 ai_data로 덮기 위해 새 요청 생성
+        factory = RequestFactory()
+        new_request = factory.post(
+            "/booking/dispatch/",  # (뷰 내부에서만 씀)
+            data=ai_data,
+            content_type='application/json'
+        )
+        new_request.user = request.user
 
-
+        # as_view()는 Django의 CBV 디스패처
+        return AmadeusIntentDispatcherView.as_view()(new_request)
 
 # class ChatMessageView(APIView):
 #     permission_classes = [IsAuthenticated]
