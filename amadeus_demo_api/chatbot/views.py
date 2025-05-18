@@ -40,7 +40,7 @@ class AskChatbotView(APIView):
 
         try:
             ai_response = requests.post(
-                "http://fastapi_server:8080/question",
+                "http://127.0.0.1:8080/question",
                 json=payload,
                 timeout=5
             )
