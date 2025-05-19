@@ -44,7 +44,7 @@ class AskChatbotView(APIView):
         payload = {
             "chat_history": chat_history_list
         }
-
+        print("checkmsgg")
         try:
             ai_response = requests.post(
                 "http://172.31.25.19:8080/question",
