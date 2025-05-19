@@ -26,6 +26,8 @@ class AskChatbotView(APIView):
     permission_classes = [AllowAny]
 
     def post(self, request):
+        print("request.user:", request.user)
+        print("Authorization header:", request.META.get('HTTP_AUTHORIZATION'))
         question = request.data.get('question')
         if not question:
             return Response({"error": "질문이 필요합니다."}, status=400)
