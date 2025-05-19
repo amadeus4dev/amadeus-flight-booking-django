@@ -8,7 +8,8 @@ class AmadeusIntentDispatcherView(APIView):
 
     def post(self, request):
         ai_response = request.data  # 이미 AI 서버 응답이라고 가정
-
+        print("dispatcher user:", request.user)
+        print("dispatcher auth:", getattr(request, "auth", None))
         intent_type = ai_response.get("type")
         success = ai_response.get("success")
 

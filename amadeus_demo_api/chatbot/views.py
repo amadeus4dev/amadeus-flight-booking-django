@@ -67,7 +67,8 @@ class AskChatbotView(APIView):
             data=ai_data,
             content_type='application/json'
         )
-        new_request.user = request.user
+        new_request._force_auth_user = request.user
+        #new_request.user = request.user
 
         # as_view()는 Django의 CBV 디스패처
         return AmadeusIntentDispatcherView.as_view()(new_request)
