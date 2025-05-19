@@ -31,6 +31,7 @@ class AskChatbotView(APIView):
 
     def post(self, request):
         print("request.user:", request.user)
+        print("auth:", request.auth)
         print("Authorization header:", request.META.get('HTTP_AUTHORIZATION'))
         question = request.data.get('question')
         if not question:
