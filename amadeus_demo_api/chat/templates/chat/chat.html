@@ -239,7 +239,7 @@
 											</g>
 										</svg></div>
 									<div>Digidop Académie</div>
-								</a><a href="https://www.tiktok.com/@digidop.fr" target="_blank"
+								</a><a href="/chat/" target="_blank"
 									class="gpt_nav_link no-border w-inline-block">
 									<div class="icon-1x1-semimedium w-embed"><svg xmlns="http://www.w3.org/2000/svg"
 											xmlns:xlink="http://www.w3.org/1999/xlink" aria-hidden="true" role="img"
@@ -249,7 +249,7 @@
 												d="M16.6 5.82s.51.5 0 0A4.278 4.278 0 0 1 15.54 3h-3.09v12.4a2.592 2.592 0 0 1-2.59 2.5c-1.42 0-2.6-1.16-2.6-2.6c0-1.72 1.66-3.01 3.37-2.48V9.66c-3.45-.46-6.47 2.22-6.47 5.64c0 3.33 2.76 5.7 5.69 5.7c3.14 0 5.69-2.55 5.69-5.7V9.01a7.35 7.35 0 0 0 4.3 1.38V7.3s-1.88.09-3.24-1.48z">
 											</path>
 										</svg></div>
-									<div>TikTok</div>
+									<div>Home</div>
 								</a>
 							</div>
 						</div>
@@ -798,10 +798,71 @@
 		const form = document.querySelector(".gpt_form-block");
 		let isFirstSubmit = true;
 
+		// fetch previous chatting session & name
+		if (window.location.pathname.startsWith("/chat")) {
+			// fetch("/api/chat/sessions")
+			// 	.then(res => res.json())
+			// 	.then(data => {
+			// 		renderPreviousChatSessions(data.sessions);
+			// 	})
+			// 	.catch(err => {
+			// 		console.error("채팅 세션 목록 불러오기 실패:", err);
+			// 	});
+			console.log("init")
+
+			const sessions = [
+				{ sessionId: "abc123", title: "파리로 가는 비행편 알려줘" },
+				{ sessionId: "def456", title: "다음 주 뉴욕 호텔 예약" },
+				{ sessionId: "ghi789", title: "국내선 할인 항공권 있어?" }
+			];
+
+			sessions.forEach(session => {
+
+				// // 클릭 시 세션으로 이동 (SPA 방식이면 pushState 사용)
+				// line.addEventListener("click", () => {
+				// 	history.pushState(null, '', `/chat/${session.sessionId}`);
+				// 	// TODO: 해당 세션 로딩 로직 호출 필요
+				// 	loadChatSession(session.sessionId); // 아래에 정의해야 함
+				// });
+
+				// // Wrapper
+				// const wrapper = document.createElement("div");
+				// wrapper.classList.add("gpt_nav_conversation-wrapper");
+				// line.appendChild(wrapper);
+
+				// // 아이콘
+				// const icon = document.createElement("img");
+				// icon.src = "https://cdn.prod.website-files.com/63da865e4dca1b4866173120/63da86b6b134c32130c32d62_icon-chat.svg";
+				// icon.alt = "채팅 아이콘";
+				// icon.classList.add("gpt_nav_conversation-icon");
+				// wrapper.appendChild(icon);
+
+				//텍스트
+				const wrapper_child = document.querySelector(".gpt_nav_conversation")
+				const wrapper = wrapper_child.parentElement;
+				console.log(wrapper)
+				const text = document.createElement("div");
+				text.classList.add(".gpt_nav_conversation");
+				text.textContent = session.title;
+				wrapper.appendChild(text);
+			});
+		}
+
+		function generateUUID() {
+			// RFC4122 버전 4 UUID 생성기
+			return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, function(c) {
+			const r = Math.random() * 16 | 0;
+			const v = c === 'x' ? r : (r & 0x3 | 0x8);
+			return v.toString(16);
+			})
+		}
+
 		// Launch the function when the form is submitted
 		form.addEventListener("submit", event => {
 
 			event.preventDefault();
+			const sessionId = generateUUID()
+			history.pushState(null, '', `/chat/${sessionId}`);
 
 			// Function that scrolls through the conversation when the form is sent
 			setTimeout(function () {
@@ -820,20 +881,21 @@
 				isFirstSubmit = false;
 			}
 
-			let matchingAnswer=''
+			let matchingAnswer='test answer'
 			// 백엔드 api에서 받아온 답변 출력
-			apiClient.post('/booking/search/', {
-				originLocationCode: '***',
-				destinationLocationCode: '***',
-				departureDate: '2025-05-10',
-				aduluts: 1
-			})
-			.then(response => {
-				matchingAnswer = response.data.answer;
-			})
-			.catch(error => {
-				console.error('Error:', error);
-			});
+			// apiClient.post('/booking/search/', {
+			// 	originLocationCode: '***',
+			// 	destinationLocationCode: '***',
+			// 	departureDate: '2025-05-10',
+			// 	aduluts: 1,
+			// 	// sessionId: sessionId
+			// })
+			// .then(response => {
+			// 	matchingAnswer = response.data.answer;
+			// })
+			// .catch(error => {
+			// 	console.error('Error:', error);
+			// });
 
 			
 			// Adds the user's request to the conversation
@@ -890,13 +952,20 @@
 				});
 
 				// 메뉴의 대화창에서, 대화창의 제목을 유저의 마지막 질문으로 업데이트
-				const gptNavConversationContentText = document.querySelectorAll(".gpt_nav_conversation-content-text");
+				//const gptNavConversationContentText = document.querySelectorAll(".gpt_nav_conversation-content-text");				
+				const latest = document.querySelector(".gpt_nav_conversation")
+				console.log("r")
+				console.log(latest)
+				if (latest) {
+					latest.innerHTML = inputValue;
+					//latest.classList.remove('gpt_nav_conversation-content-text');
+				}
 				document.querySelector(".gpt_content-answer").appendChild(line);
-				gptNavConversationContentText.forEach((element) => {
-					// inputValue: 유저 답변
-					element.innerHTML = inputValue;
-					element.classList.remove('gpt_nav_conversation-content-text');
-				});
+				// gptNavConversationContentText.forEach((element) => {
+				// 	// inputValue: 유저 답변
+				// 	element.innerHTML = inputValue;
+				// 	element.classList.remove('gpt_nav_conversation-content-text');
+				// });
 			}
 
 			if (matchingAnswer) {
