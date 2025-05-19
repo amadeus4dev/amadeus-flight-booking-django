@@ -40,7 +40,7 @@ class AskChatbotView(APIView):
 
         try:
             ai_response = requests.post(
-                "http://172.18.0.2:8080/question",
+                "http://172.31.25.19:8080/question",
                 json=payload,
                 timeout=5
             )
