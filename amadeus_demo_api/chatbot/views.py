@@ -4,6 +4,7 @@ from rest_framework.response import Response
 from rest_framework import status
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.permissions import AllowAny
+from rest_framework_simplejwt.authentication import JWTAuthentication
 from .models import ChatHistory
 from .serializers import ChatHistorySerializer
 from .models import ChatbotFlightActionLog
@@ -23,7 +24,8 @@ class ChatHistoryView(APIView):
         return Response({"chat_history": chat_history_list}, status=status.HTTP_200_OK)
     
 class AskChatbotView(APIView):
-    permission_classes = [AllowAny]
+    authentication_classes = [JWTAuthentication]
+    permission_classes = [IsAuthenticated]
 
     def post(self, request):
         print("request.user:", request.user)
