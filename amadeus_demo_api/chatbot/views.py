@@ -3,6 +3,7 @@ from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework import status
 from rest_framework.permissions import IsAuthenticated
+from rest_framework.permissions import AllowAny
 from .models import ChatHistory
 from .serializers import ChatHistorySerializer
 from .models import ChatbotFlightActionLog
@@ -22,7 +23,7 @@ class ChatHistoryView(APIView):
         return Response({"chat_history": chat_history_list}, status=status.HTTP_200_OK)
     
 class AskChatbotView(APIView):
-    permission_classes = [IsAuthenticated]
+    permission_classes = [AllowAny]
 
     def post(self, request):
         question = request.data.get('question')
