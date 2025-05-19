@@ -5,6 +5,8 @@ from rest_framework import status
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.permissions import AllowAny
 from rest_framework_simplejwt.authentication import JWTAuthentication
+from django.utils.decorators import method_decorator
+from django.views.decorators.csrf import csrf_exempt
 from .models import ChatHistory
 from .serializers import ChatHistorySerializer
 from .models import ChatbotFlightActionLog
@@ -22,7 +24,7 @@ class ChatHistoryView(APIView):
             chat_history_list.append(record.answer)
         #serializer = ChatHistorySerializer(chat_records, many=True)
         return Response({"chat_history": chat_history_list}, status=status.HTTP_200_OK)
-    
+@method_decorator(csrf_exempt, name='dispatch')    
 class AskChatbotView(APIView):
     authentication_classes = [JWTAuthentication]
     permission_classes = [IsAuthenticated]
