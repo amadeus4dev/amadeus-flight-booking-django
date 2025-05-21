@@ -916,7 +916,7 @@
 			})
 			.then(response=>{
 				console.log(response);
-				matchingAnswer=response.chat_history;
+				matchingAnswer=response.data.message;
 			})
 			.catch(error=>{
 				console.error('Error:',error);
