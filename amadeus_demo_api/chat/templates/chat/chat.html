@@ -916,9 +916,9 @@
 			})
 			.then(response=>{
 				console.log(response);
-				console.log(response.data);
 				console.log(response.data.message);
-				matchingAnswer=response.data.message;
+				console.log(typeof(response.data.message))
+				matchingAnswer=JSON.stringify(response.data.message);
 			})
 			.catch(error=>{
 				console.error('Error:',error);
