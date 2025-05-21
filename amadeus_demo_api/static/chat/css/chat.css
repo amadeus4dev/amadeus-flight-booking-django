@@ -3377,6 +3377,17 @@ html {
   
   .gpt_nav_conversation {
     grid-column-gap: 1rem;
+    color: #b0b0b0;          /* 글자색을 좀 더 어둡고 무게감 있게 */
+    background-color: #1f2228;
+    border-radius: .375rem;
+    flex-direction: row;
+    align-items: center;
+    padding: .5rem .75rem;
+    display: none;
+  }
+
+  .gpt_nav_conversation.selected {
+    grid-column-gap: 1rem;
     color: #dadada;
     background-color: #343541;
     border-radius: .375rem;
