@@ -849,6 +849,11 @@
 				const session_bar_new = session_bar_origin.cloneNode(true)
 				const session_list = session_bar_origin.parentElement;
 
+				const sessionId_wrapper=document.createElement('div');
+				sessionId_wrapper.classList.add('session-id');
+				sessionId_wrapper.innerText = session.sessionId;
+				session_bar_new.appendChild(sessionId_wrapper)
+
 				let innerText = session_bar_new.querySelector('.gpt_nav_conversation-content-text');
 				innerText.innerHTML=session.title;
 				session_bar_new.style.display = "flex";
@@ -869,7 +874,7 @@
 		form.addEventListener("submit", event => {
 
 			event.preventDefault();
-			const sessionId = generateUUID()
+			let sessionId;
 			history.pushState(null, '', `/chat/${sessionId}`);
 
 			// Function that scrolls through the conversation when the form is sent
@@ -887,6 +892,7 @@
 				document.querySelector(".gpt_content-answer").style.display = "flex";
 				document.querySelector(".gpt_nav_conversation").style.display = "flex";
 				isFirstSubmit = false;
+				sessionId = generateUUID();
 
 				// 모든 채팅 세션방에 대해 eventListner 부착
 				const sessions = document.querySelectorAll(".gpt_nav_conversation")
@@ -895,24 +901,26 @@
 					console.log(session);
 					session.addEventListener('click', sessionClickListener);
 				})
+
+				const latest = document.querySelector(".gpt_nav_conversation")
+				const sessionId_wrapper=document.createElement('div');
+				sessionId_wrapper.classList.add('session-id');
+				sessionId_wrapper.innerText = sessionId;
+				latest.appendChild(sessionId_wrapper)
 			}
 
-			let matchingAnswer='test answer'
-			// 백엔드 api에서 받아온 답변 출력
-			// apiClient.post('/booking/search/', {
-			// 	originLocationCode: '***',
-			// 	destinationLocationCode: '***',
-			// 	departureDate: '2025-05-10',
-			// 	aduluts: 1,
-			// 	// sessionId: sessionId
-			// })
-			// .then(response => {
-			// 	matchingAnswer = response.data.answer;
-			// })
-			// .catch(error => {
-			// 	console.error('Error:', error);
-			// });
+			// 백엔드에 메시지 전달
+			apiClient.post('chat/ask/',{
+				"question": inputValue
+			})
+			.then(response=>{
+				matchingAnswer=response.data.chat_history;
+			})
+			.catch(error=>{
+				console.error('Error:',error);
+			});
 
+			let matchingAnswer='test answer'
 			
 			// Adds the user's request to the conversation
 			const lightMode1 = document.querySelector(".icon-1x1-semimedium.is-light-mode");
@@ -971,6 +979,7 @@
 				// 메뉴의 대화창에서, 대화창의 제목을 유저의 마지막 질문으로 업데이트
 				//const gptNavConversationContentText = document.querySelectorAll(".gpt_nav_conversation-content-text");				
 				const latest = document.querySelector(".gpt_nav_conversation")
+
 				console.log(latest);
 				if (latest) {
 					let innerText = latest.querySelector('.gpt_nav_conversation-content-text');
