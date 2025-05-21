@@ -870,8 +870,19 @@
 			})
 		}
 
-		// Launch the function when the form is submitted
-		form.addEventListener("submit", event => {
+		async function sendMessage(inputValue){
+			try {
+				const response = await apiClient.post('chat/ask/', {
+				"question": inputValue
+				});
+				const matchingAnswer = response.data.message;
+				return matchingAnswer
+			} catch (error) {
+				console.error("Error:", error);
+			}
+		}
+
+		form.addEventListener("submit", async event => {
 
 			event.preventDefault();
 			let sessionId;
@@ -909,20 +920,10 @@
 				latest.appendChild(sessionId_wrapper)
 			}
 
-			// 백엔드에 메시지 전달
 			let matchingAnswer;
-			apiClient.post('chat/ask/',{
-				"question": inputValue
-			})
-			.then(response=>{
-				console.log(response);
-				console.log(response.data.message);
-				console.log(typeof(response.data.message))
-				matchingAnswer=JSON.stringify(response.data.message);
-			})
-			.catch(error=>{
-				console.error('Error:',error);
-			});
+
+			// 백엔드에 메시지 전달
+			matchingAnswer = await sendMessage(inputValue);
 			console.log(matchingAnswer);
 			// Adds the user's request to the conversation
 			const lightMode1 = document.querySelector(".icon-1x1-semimedium.is-light-mode");
