@@ -915,7 +915,8 @@
 				"question": inputValue
 			})
 			.then(response=>{
-				matchingAnswer=response.data.chat_history;
+				console.log(response);
+				matchingAnswer=response.chat_history;
 			})
 			.catch(error=>{
 				console.error('Error:',error);
