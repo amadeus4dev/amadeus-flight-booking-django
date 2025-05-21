@@ -916,12 +916,13 @@
 			})
 			.then(response=>{
 				console.log(response);
+				console.log.response.data.message;
 				matchingAnswer=response.data.message;
 			})
 			.catch(error=>{
 				console.error('Error:',error);
 			});
-			
+			console.log(matchingAnswer);
 			// Adds the user's request to the conversation
 			const lightMode1 = document.querySelector(".icon-1x1-semimedium.is-light-mode");
 			const classList = lightMode1.style.display === "none" ? "is-light" : "is-dark";
