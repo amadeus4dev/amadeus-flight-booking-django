@@ -798,6 +798,13 @@
 		const form = document.querySelector(".gpt_form-block");
 		let isFirstSubmit = true;
 
+		function sessionClickListener(event){
+			console.log("listen!");
+			document.querySelectorAll(".gpt_nav_conversation").forEach(item=>item.classList.remove('selected'));
+			event.currentTarget.classList.add('selected');
+			console.log(event.currentTarget)
+		}
+
 		// fetch previous chatting session & name
 		if (window.location.pathname.startsWith("/chat")) {
 			// fetch("/api/chat/sessions")
@@ -838,13 +845,14 @@
 				// wrapper.appendChild(icon);
 
 				//텍스트
-				const wrapper_child = document.querySelector(".gpt_nav_conversation")
-				const wrapper = wrapper_child.parentElement;
-				console.log(wrapper)
-				const text = document.createElement("div");
-				text.classList.add(".gpt_nav_conversation");
-				text.textContent = session.title;
-				wrapper.appendChild(text);
+				const session_bar_origin = document.querySelector(".gpt_nav_conversation")
+				const session_bar_new = session_bar_origin.cloneNode(true)
+				const session_list = session_bar_origin.parentElement;
+
+				let innerText = session_bar_new.querySelector('.gpt_nav_conversation-content-text');
+				innerText.innerHTML=session.title;
+				session_bar_new.style.display = "flex";
+				session_list.appendChild(session_bar_new);
 			});
 		}
 
@@ -879,6 +887,14 @@
 				document.querySelector(".gpt_content-answer").style.display = "flex";
 				document.querySelector(".gpt_nav_conversation").style.display = "flex";
 				isFirstSubmit = false;
+
+				// 모든 채팅 세션방에 대해 eventListner 부착
+				const sessions = document.querySelectorAll(".gpt_nav_conversation")
+				console.log(sessions)
+				sessions.forEach(session=>{
+					console.log(session);
+					session.addEventListener('click', sessionClickListener);
+				})
 			}
 
 			let matchingAnswer='test answer'
@@ -920,6 +936,7 @@
 			const text = document.createElement("div");
 			text.classList.add("gpt_content-text", classList);
 			text.innerHTML = inputValue;
+			console.log(text)
 			wrapper.appendChild(text);
 
 			document.querySelector(".gpt_content-answer").appendChild(line1);
@@ -954,11 +971,11 @@
 				// 메뉴의 대화창에서, 대화창의 제목을 유저의 마지막 질문으로 업데이트
 				//const gptNavConversationContentText = document.querySelectorAll(".gpt_nav_conversation-content-text");				
 				const latest = document.querySelector(".gpt_nav_conversation")
-				console.log("r")
-				console.log(latest)
+				console.log(latest);
 				if (latest) {
-					latest.innerHTML = inputValue;
-					//latest.classList.remove('gpt_nav_conversation-content-text');
+					let innerText = latest.querySelector('.gpt_nav_conversation-content-text');
+					console.log(innerText);
+					innerText.innerHTML = inputValue;
 				}
 				document.querySelector(".gpt_content-answer").appendChild(line);
 				// gptNavConversationContentText.forEach((element) => {
