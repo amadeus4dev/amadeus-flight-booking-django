@@ -151,18 +151,29 @@ graph.add_edge("extract_for_list", END)
 
 app = graph.compile()
 
-class llm:
-    def invoke(self, chat_history):
+class LLM:
+
+    @classmethod
+    def invoke(cls, chat_history):
         response = app.invoke({'chat_history': chat_history})
 
         ## TODO
         # 문자열 "false"를 False로 바꾸기.
         # 각 type에 맞게 다 리턴하기
         if response['type'] == 'search':
-            return {'type': 'search', 'originLocationCode': response['originLocationCode'], 
-                    'destinationLocationCode': response['destinationLocationCode']}
+            ret = {'type': 'search', 'success': response['success']}
+            ret |= {'originLocationCode': response['originLocationCode'] if response['originLocationCode'] != 'false' else False}
+            ret |= {'destinationLocationCode': response['destinationLocationCode'] if response['destinationLocationCode'] != 'false' else False}
+            ret |= {'departureDate': response['departureDate'] if response['departureDate'] != 'false' else False}
+            ret |= {'adults': response['adults'] if response['adults'] != 'false' else False}
+            return ret
         elif response['type'] == 'booking with number':
-            pass
+            ret = {'type': 'booking with number', 'success': response['success']}
+            ret |= {'number': response['number'] if response['number'] != 'false' else False}
+            return ret
         elif response['type'] == 'cancel':
-            pass
+            ret = {'type': 'cancel', 'success': response['success']}
+            ret |= {'number': response['number'] if response['number'] != 'false' else False}
+            return ret
         elif response['type'] == 'list':
+            return {'type': 'list', 'success': response['success']}
