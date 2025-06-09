@@ -8,10 +8,6 @@ With the Amadeus Self-Service APIs you can integrate flight booking capabilities
 * [Flight Offer Price](https://developers.amadeus.com/self-service/category/air/api-doc/flight-offers-price):  confirms the latest price and availability of a specific chosen flight.
 * [Flight Create Orders](https://developers.amadeus.com/self-service/category/air/api-doc/flight-create-orders): to book flights and ancillary services proposed by the airline.
 
-We also return COVID-19 travel restrictions information with the [Travel Restrictions API](https://developers.amadeus.com/self-service/category/destination-content/api-doc/travel-restrictions) for the destination country. 
-
-The [application](https://flight-booking-engine.azurewebsites.net/) is also hosted, so you can play directly with it. 
-
 ## How to run the project via Docker (recommended)
 
 Build the image from the Dockerfile. The following command will 
